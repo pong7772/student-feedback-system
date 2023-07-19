@@ -83,6 +83,7 @@ const LoginForm = () => {
         setLoading(false)
         router.push('/crm')
       } else {
+        setLoading(false)
         toast.error("Login failed. Please try again later.", {
           position: "top-right",
           autoClose: 1500,
@@ -152,8 +153,13 @@ const LoginForm = () => {
       }
 
       <button className="btn btn-dark block w-full text-center" type="submit">
-        Sign in
-        {loading &&
+        {loading ?
+          < div className="flex justify-center items-center">
+            <p>
+              Loading ...
+            </p>
+          </div>
+          :
           < div className="flex justify-center items-center">
             <p>
               Loading ...
