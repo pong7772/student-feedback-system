@@ -80,7 +80,7 @@ const LoginForm = () => {
           progress: undefined,
           theme: "light",
         });
-        setLoading(false)
+        setLoading(!loading)
         router.push('/crm')
       } else {
         setLoading(false)
@@ -162,7 +162,7 @@ const LoginForm = () => {
           :
           < div className="flex justify-center items-center">
             <p>
-              Loading ...
+              SignIn🔐
             </p>
           </div>
 
