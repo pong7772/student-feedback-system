@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "kitdev": "next dev",
+    "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{js,ts,tsx,mdx}\" --cache",
