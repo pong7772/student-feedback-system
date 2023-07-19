@@ -53,7 +53,9 @@ const Login = () => {
                       alt=""
                       className="mx-auto"
                     />
-                    <h4 className="to-blue-400 font-bold text-blue-800 ">Sign in</h4>
+                    <div className="text-blue-500 text-base">
+                      Student Feedback System
+                    </div>
                   </Link>
                 </div>
                 <div className="text-center 2xl:mb-10 mb-4">
