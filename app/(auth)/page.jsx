@@ -53,9 +53,7 @@ const Login = () => {
                       alt=""
                       className="mx-auto"
                     />
-                    <div className="text-slate-500 text-base">
-                      Sign in to your account to start using Student Feedback System
-                    </div>
+                    <h4 className="to-blue-400 font-bold text-blue-800 ">Sign in</h4>
                   </Link>
                 </div>
                 <div className="text-center 2xl:mb-10 mb-4">
