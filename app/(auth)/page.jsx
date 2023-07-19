@@ -47,12 +47,15 @@ const Login = () => {
                     <img
                       src={
                         isDark
-                          ? "/assets/images/logo/logo-white.svg"
-                          : "/assets/images/logo/logo.svg"
+                          ? "/assets/images/avatar/av-1.svg"
+                          : "/assets/images/avatar/av-1.svg"
                       }
                       alt=""
                       className="mx-auto"
                     />
+                    <div className="text-slate-500 text-base">
+                      Sign in to your account to start using Student Feedback System
+                    </div>
                   </Link>
                 </div>
                 <div className="text-center 2xl:mb-10 mb-4">
