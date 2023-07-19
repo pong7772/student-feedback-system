@@ -9,7 +9,7 @@ import Button from "@/components/ui/Button";
 import useWidth from "@/hooks/useWidth";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import EditProfile from "@/components/partials/app/profile-service/EditProfile";
+import EditProfile from "../../../../components/partials/app/profile-service/Editprofile";
 import { updateUserProfile } from "@/components/partials/app/profile-service/store";
 import { ToastContainer, toast } from "react-toastify";
 import Loading from "@/components/Loading";
@@ -114,31 +114,6 @@ const profile = () => {
                   {profile?.role}
                 </div>
               </div>
-              {/* <div className="flex-1">
-                <div className="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                  Class {profile?.class}
-                </div>
-                <div className="text-sm text-slate-600 font-light dark:text-slate-300">
-                  {profile?.batch}
-                </div>
-              </div>
-
-              <div className="flex-1">
-                <div className="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                  Course
-                </div>
-                <div className="text-sm text-slate-600 font-light dark:text-slate-300">
-                  {profile?.course}
-                </div>
-              </div>
-              <div className="flex-1">
-                <div className="text-base text-slate-900 dark:text-slate-300 font-medium mb-1">
-                  Department
-                </div>
-                <div className="text-sm text-slate-600 font-light dark:text-slate-300">
-                  {profile?.department}
-                </div>
-              </div> */}
 
             </div>
           </div>
@@ -162,37 +137,7 @@ const profile = () => {
                       </a>
                     </div>
                   </li>
-                  {/* 
-                  <li className="flex space-x-3 rtl:space-x-reverse">
-                    <div className="flex-none text-2xl text-slate-600 dark:text-slate-300">
-                      <Icon icon="heroicons:phone-arrow-up-right" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
-                        PHONE
-                      </div>
-                      <a
-                        href="tel:010987772"
-                        className="text-base text-slate-600 dark:text-slate-50"
-                      >
-                        {profiles?.phone}
-                      </a>
-                    </div>
-                  </li> */}
 
-                  {/* <li className="flex space-x-3 rtl:space-x-reverse">
-                    <div className="flex-none text-2xl text-slate-600 dark:text-slate-300">
-                      <Icon icon="heroicons:map" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="uppercase text-xs text-slate-500 dark:text-slate-300 mb-1 leading-[12px]">
-                        LOCATION
-                      </div>
-                      <div className="text-base text-slate-600 dark:text-slate-50">
-                        {profiles?.location}
-                      </div>
-                    </div>
-                  </li> */}
                 </ul>
               </Card>
             </div>
@@ -204,7 +149,10 @@ const profile = () => {
           </div>
         </div>
       }
-      <EditProfile />
+      {
+        isAuth &&
+        <EditProfile />
+      }
     </div >
   )
 };
