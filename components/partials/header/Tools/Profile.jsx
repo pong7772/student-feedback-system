@@ -44,7 +44,7 @@ const Profile = () => {
   const fetchProfile = async () => {
     if (isAuth) {
       await fetchData(
-        "/user/get-user?id=" + users?.userId, {}, "GET"
+        "/user/get-user?id=" + users?.accountId, {}, "GET"
       ).then((res) => {
         setUser({
           ...res,

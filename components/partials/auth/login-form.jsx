@@ -162,7 +162,7 @@ const LoginForm = () => {
           :
           < div className="flex justify-center items-center">
             <p>
-              SignIn🔐
+              SignIn 🔐
             </p>
           </div>
 

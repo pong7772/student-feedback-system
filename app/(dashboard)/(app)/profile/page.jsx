@@ -23,7 +23,7 @@ const profile = () => {
   const { width, breakpoints } = useWidth();
   const fetchProfile = async () => {
     await fetchData(
-      "/user/get-user?id=" + users?.userId, {}, "GET"
+      "/user/get-user?id=" + users?.accountId, {}, "GET"
     ).then((res) => {
       setProfile({
         ...res,

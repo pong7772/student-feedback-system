@@ -75,6 +75,7 @@ export const authSlice = createSlice({
         token,
         role,
         isAuth,
+        accountId,
       } = action.payload;
       // check is token is valid or not and match with user
       if (typeof window !== "undefined") {
@@ -105,6 +106,7 @@ export const authSlice = createSlice({
         token,
         role,
         isAuth,
+        accountId,
       };
       state.isAuth = isAuth;
       if (typeof window !== "undefined") {
