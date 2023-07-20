@@ -138,11 +138,11 @@ const EditProfile = () => {
     // params.append("lastname", data.lastname);
     // params.append("role", data.role.value);
     // params.append("password", data.password);
-    const id = profiles.userId
+    const id = profiles.accountId
 
     if (id) {
       const params = {
-        id: profiles.userId,
+        id: profiles.accountId,
         firstname: data.firstname,
         lastname: data.lastname,
         role: data.role.value,
