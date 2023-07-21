@@ -22,6 +22,7 @@ import useSkin from "@/hooks/useSkin";
 import useWidth from "@/hooks/useWidth";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
   const [isDark] = useDarkMode();
   const [skin] = useSkin();
   const [navbarType] = useNavbarType();
+
   const dispatch = useDispatch();
 
   const router = useRouter();
@@ -42,7 +44,7 @@ export default function RootLayout({ children }) {
 
   useEffect(() => {
     if (!isAuth) {
-      router.push("/");
+      redirect("/");
     }
     setLoading(false);
     dispatch(reloadData());

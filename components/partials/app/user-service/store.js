@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
-
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 
 export const appUserSlice = createSlice({
   name: "appUser",
@@ -10,30 +9,8 @@ export const appUserSlice = createSlice({
     isLoading: null,
     editItem: {},
     editModal: false,
-    users: [
-      {
-        id: uuidv4(),
-        role: "Admin",
-        name: "visothipong ",
-        des: "hi there",
-        startDate: "2022-10-03",
-        updateDate: "2022-10-06",
-        department: "IT",
-        password: "123456",
-        confirm_password: "123456"
-      },
-      {
-        id: uuidv4(),
-        role: "Admin",
-        name: "Lakhena ",
-        des: "hi there",
-        startDate: "2022-10-03",
-        updateDate: "2022-10-06",
-        department: "IT",
-        password: "123456",
-        confirm_password: "123456"
-      },
-    ],
+    users: [],
+    page: 0,
   },
   reducers: {
     toggleAddModal: (state, action) => {
@@ -41,6 +18,9 @@ export const appUserSlice = createSlice({
     },
     toggleEditModal: (state, action) => {
       state.editModal = action.payload;
+    },
+    setUser: (state, action) => {
+      state.users = action.payload;
     },
     pushUser: (state, action) => {
       state.users.unshift(action.payload);
@@ -57,9 +37,7 @@ export const appUserSlice = createSlice({
       });
     },
     removeUser: (state, action) => {
-      state.users = state.users.filter(
-        (item) => item.id !== action.payload
-      );
+      state.users = state.users.filter((item) => item.id !== action.payload);
       toast.warning("Remove Successfully", {
         position: "top-right",
         autoClose: 1500,
@@ -83,15 +61,7 @@ export const appUserSlice = createSlice({
       );
       // update project
       state.users.splice(index, 1, {
-        id: action.payload.id,
-        name: action.payload.name,
-        des: action.payload.des,
-        startDate: action.payload.startDate,
-        updateDate: action.payload.updateDate,
-        role: action.payload.role,
-        department: action.payload.department,
-        password: action.payload.password,
-        confirm_password: action.payload.confirm_password
+        ...action.payload,
       });
     },
   },
@@ -104,5 +74,6 @@ export const {
   removeUser,
   toggleEditModal,
   updateUser,
+  setUser,
 } = appUserSlice.actions;
 export default appUserSlice.reducer;

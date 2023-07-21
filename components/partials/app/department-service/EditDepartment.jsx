@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select, { components } from "react-select";
 import Modal from "@/components/ui/Modal";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleEditModal, updateUser } from "./store";
+import { toggleEditModal, toggleEditModalDep, updateDep, updateUser } from "./store";
 import Icon from "@/components/ui/Icon";
 import Textarea from "@/components/ui/Textarea";
 import Flatpickr from "react-flatpickr";
@@ -12,6 +12,7 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import FormGroup from "@/components/ui/FormGroup";
 import Textinput from "@/components/ui/Textinput";
+import { fetchData } from "../service";
 const styles = {
   multiValue: (base, state) => {
     return state.data.isFixed ? { ...base, opacity: "0.5" } : base;
@@ -33,19 +34,14 @@ const styles = {
 
 
 const EditDepartment = () => {
-  const { editModal, editItem } = useSelector((state) => state.user);
+  const { editModal, editItem } = useSelector((state) => state.department);
+  const { openProjectModal } = useSelector((state) => state.department);
   const dispatch = useDispatch();
-  const [startDate, setStartDate] = useState(new Date());
-  const [updateDate, setUpdateDate] = useState(new Date());
 
   const FormValidationSchema = yup
     .object({
-      name: yup.string().required("Name is required"),
-      createdDate : yup
-        .date()
-        .required("Start date is required")
-        .min(new Date(), "Start date must be greater than today"),
-    
+      name: yup.string().required("Title is required"),
+
     })
     .required();
 
@@ -57,7 +53,6 @@ const EditDepartment = () => {
     handleSubmit,
   } = useForm({
     resolver: yupResolver(FormValidationSchema),
-
     mode: "all",
   });
 
@@ -65,48 +60,85 @@ const EditDepartment = () => {
     reset(editItem);
   }, [editItem]);
 
-  const onSubmit = (data) => {
-    dispatch(
-      updateUser({
-        id: editItem.id,
-        name: data.name,
-        createdDate: startDate.toISOString().split("T")[0],
-        batch: data.batch.value
-      })
-    );
-    dispatch(toggleEditModal(false));
-    toast.info("Edit Successfully", {
-      position: "top-right",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
+  const onSubmit = async (data) => {
+
+    try {
+      await fetchData("/department/edit",
+        {
+          id: data.id,
+          name: data.name,
+        },
+        "POST"
+      ).then(
+        (res) => {
+          if (res) {
+            dispatch(
+              updateDep({
+                id: data.id,
+                name: data.name,
+              })
+            );
+            dispatch(toggleEditModal(false));
+            toast.info("Edit Successfully", {
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+          } else {
+            dispatch(toggleEditModal(false));
+            toast.error("Something went wrong", {
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+          }
+        }
+      )
+
+    } catch (error) {
+      console.log(error)
+      toast.error(error
+        , {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+    }
   };
 
   return (
     <Modal
-      title="Edit User"
+      title="Create User"
+      labelclassName="btn-outline-dark"
       activeModal={editModal}
-      onClose={() => dispatch(toggleEditModal(false))}
+      onClose={() => dispatch(toggleEditModalDep(false))}
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
-        <FormGroup error={errors.name}>
-          <input
-            type="text"
-            defaultValue={editItem.name}
-            className="form-control py-2"
-            {...register("name")}
-          />
-        </FormGroup>
-        
-      
+        <Textinput
+          name="name"
+          label="Department"
+          placeholder="Enter Department Name"
+          register={register}
+          error={errors.title}
+        />
 
         <div className="ltr:text-right rtl:text-left">
-          <button className="btn btn-dark  text-center">Update</button>
+          <button className="btn btn-dark  text-center">Add</button>
         </div>
       </form>
     </Modal>

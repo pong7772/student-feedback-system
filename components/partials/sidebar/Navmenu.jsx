@@ -5,7 +5,7 @@ import { Collapse } from "react-collapse";
 import Icon from "@/components/ui/Icon";
 import { useDispatch } from "react-redux";
 import useMobileMenu from "@/hooks/useMobileMenu";
-
+import { handleLogout } from "../auth/store";
 const Navmenu = ({ menus, role }) => {
   const router = useRouter();
   const [activeSubmenu, setActiveSubmenu] = useState(null);
@@ -59,7 +59,8 @@ const Navmenu = ({ menus, role }) => {
           >
             {/* single menu with no childred*/}
             {!item.child && !item.isHeadr && (
-              <Link className="menu-link" href={item.link}>
+              <Link className="menu-link" href={item.link}  >
+
                 <span className="menu-icon flex-grow-0">
                   <Icon icon={item.icon} />
                 </span>
@@ -122,6 +123,18 @@ const Navmenu = ({ menus, role }) => {
             </Collapse>
           </li>
         ))}
+        {/* handle logout */}
+        <li className="single-sidebar-menu">
+          <button type="button" className="menu-link" onClick={() => {
+            dispatch(handleLogout())
+            router.push('/')
+          }}>
+            <span className="menu-icon flex-grow-0">
+              <Icon icon="heroicons-outline:logout" />
+            </span>
+            <div className="text-box flex-grow">Logout</div>
+          </button>
+        </li>
       </ul>
     </>
   );

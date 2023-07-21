@@ -64,9 +64,36 @@ const OptionComponent = ({ data, ...props }) => {
   );
 };
 
-const AddAcademic = ({ filler }) => {
+const AddAcademic = ({ filler, lecturerOption, semesterOption, batchOption }) => {
   const { openProjectModal } = useSelector(filler == "course" ? (state) => state.course : filler == 'batch' ? (state) => state.batch : (state) => state.semester);
   const dispatch = useDispatch();
+  const { storeDepartment } = useSelector((state) => state.department)
+  const optionDepartment = storeDepartment.map((item) => {
+    return {
+      value: item.id,
+      label: item.name,
+    };
+  });
+  const optionLecturer = lecturerOption?.map((item, id) => {
+    return {
+      value: item.id,
+      label: item.name,
+      image: `/assets/images/avatar/av-${id + 1}.svg`,
+    }
+  })
+  const optionSemester = semesterOption?.map((item) => {
+    return {
+      value: item.id,
+      label: `Semester - ${item.semesterNumber}`,
+    }
+  })
+  const optionBatch = batchOption?.map((item) => {
+    return {
+      value: item.id,
+      label: `Batch - ${item.batchNumber}`,
+    }
+  })
+
 
   return (
     <div>
@@ -77,7 +104,7 @@ const AddAcademic = ({ filler }) => {
         onClose={() => dispatch(filler == 'course' ? dispatch(courseToggleAddModal(false)) : filler == 'batch' ? dispatch(batchToggleAddModal(false)) : dispatch(semesterToggleAddModal(false)))}
       >
         {
-          filler == 'course' ? <CourseForm OptionComponent={OptionComponent} option={options} assigneeOptions={assigneeOptions} /> : filler == "batch" ? <BatchForm /> : <SemesterForm />
+          filler == 'course' ? <CourseForm assigneeOptions={optionLecturer} option={optionSemester} OptionComponent={OptionComponent} /> : filler == "batch" ? <BatchForm departmentOption={optionDepartment} /> : <SemesterForm batchOption={optionBatch} />
         }
 
       </Modal>

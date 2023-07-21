@@ -11,26 +11,22 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-
+import Moment from "moment";
 import FormGroup from "@/components/ui/FormGroup";
+import { fetchData } from "../service";
 
-function SemesterForm() {
+function SemesterForm({ batchOption }) {
     const dispatch = useDispatch();
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
 
     const FormValidationSchema = yup
         .object({
-            semester: yup.string().required("Semester is required"),
-            credits: yup.string().required("Credits are required"),
-            startDate: yup
-                .date()
-                .required("Start date is required"),
-            endDate: yup
-                .date()
-                .required("End date is required")
-                .min(new Date(), "End date must be greater than today"),
-
+            semesterNumber: yup.mixed().required("Semester is required"),
+            credit: yup.string().required("Credit Amount is required"),
+            startDate: yup.date().required("Start Date is required"),
+            endDate: yup.date().required("End Date is required"),
+            batch: yup.mixed().required("Batch is required"),
         })
         .required();
 
@@ -45,15 +41,25 @@ function SemesterForm() {
         mode: "all",
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         const semester = {
-            id: uuidv4(),
-            semester: data.semester,
-            credits: data.credits,
-            startDate: data.startDate?.toISOString().split("T")[0],
-            endDate: data.endDate?.toISOString().split("T")[0],
+            id: data.batch.value,
+            semesterNumber: data.semesterNumber,
+            credit: data.credit,
+            // startDate: data.startDate?.toISOString().split("T")[0],
+            startDate: Moment(data.startDate).format("DD-MM-YYYY"),
+            endDate: Moment(data.endDate).format("DD-MM-YYYY"),
         };
-        dispatch(pushSemester(semester));
+        await fetchData(
+            "/semester/create",
+            semester,
+            "POST"
+        ).then((res) => {
+            dispatch(semesterToggleAddModal(false));
+            dispatch(pushSemester(res));
+        }).catch((err) => {
+            console.log(err);
+        });
         dispatch(semesterToggleAddModal(false));
         reset();
     };
@@ -61,18 +67,37 @@ function SemesterForm() {
         <div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
                 <Textinput
-                    name="semester"
+                    name="semesterNumber"
                     label="semester Number"
                     placeholder="semester Number"
                     register={register}
-                    error={errors.semester}
+
                 />
                 <Textinput
-                    name="credits"
+                    name="credit"
                     label="Credits"
                     placeholder="Credits"
                     register={register}
-                    error={errors.credits}
+
+                />
+                <label className="form-label" htmlFor="icon_s">
+                    Assign To Batch
+                </label>
+                <Controller
+                    name="batch"
+                    control={control}
+                    render={({ field }) => {
+                        return (
+                            <Select
+                                {...field}
+                                options={batchOption}
+                                className="react-select "
+                                classNamePrefix="select"
+                                id="icon_s"
+                            />
+                        )
+                    }
+                    }
                 />
                 <div className="grid lg:grid-cols-2 gap-4 grid-cols-1">
                     <FormGroup

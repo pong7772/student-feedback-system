@@ -14,7 +14,7 @@ const initProfile = () => {
           image: "/assets/images/avatar/av-1.svg",
           skill: "Ui/Ux Designer",
         }
-      : { id: "", role: "", email: "", name: "" };
+      : {};
   }
 };
 
@@ -42,6 +42,9 @@ export const appProfileSlice = createSlice({
     },
     reloadData: (state, action) => {
       state.profiles = initProfile();
+    },
+    setUserProfile: (state, action) => {
+      state.profiles = action.payload;
     },
 
     removeUserProfile: (state, action) => {
@@ -81,5 +84,6 @@ export const {
   toggleEditModal,
   updateUserProfile,
   reloadData,
+  setUserProfile,
 } = appProfileSlice.actions;
 export default appProfileSlice.reducer;

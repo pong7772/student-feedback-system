@@ -16,11 +16,20 @@ import Language from "./Tools/Language";
 import useRtl from "@/hooks/useRtl";
 import useMobileMenu from "@/hooks/useMobileMenu";
 import MonoChrome from "./Tools/MonoChrome";
-
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 const Header = ({ className = "custom-class" }) => {
   const [collapsed, setMenuCollapsed] = useSidebar();
   const { width, breakpoints } = useWidth();
   const [navbarType] = useNavbarType();
+  const [role, setRole] = useState("");
+  const { users } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (users) {
+      setRole(users.role);
+    }
+  }, [users]);
   const navbarTypeClass = () => {
     switch (navbarType) {
       case "floating":
@@ -112,7 +121,7 @@ const Header = ({ className = "custom-class" }) => {
           )}
           {/*  Horizontal  Main Menu */}
           {menuType === "horizontal" && width >= breakpoints.xl ? (
-            <HorizentalMenu />
+            <HorizentalMenu role={role} />
           ) : null}
           {/* Nav Tools  */}
           <div className="nav-tools flex items-center lg:space-x-14 space-x-6 rtl:space-x-reverse">

@@ -11,9 +11,9 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-
+import axios from "axios";
 import FormGroup from "@/components/ui/FormGroup";
-
+import { toast } from "react-toastify";
 const styles = {
   multiValue: (base, state) => {
     return state.data.isFixed ? { ...base, opacity: "0.5" } : base;
@@ -32,25 +32,25 @@ const styles = {
   }),
 };
 
-const assigneeOptions = [
+const roleOptions = [
   {
-    value: "admin",
-    label: "Admin",
+    value: "ADMIN",
+    label: "ADMIN",
     image: "/assets/images/avatar/av-1.svg",
   },
   {
-    value: "student",
-    label: "Student",
+    value: "STUDENT",
+    label: "STUDENT",
     image: "/assets/images/avatar/av-2.svg",
   },
   {
-    value: "teacher",
-    label: "Teacher",
+    value: "LECTURER",
+    label: "LECTURER",
     image: "/assets/images/avatar/av-3.svg",
   },
 
 ];
-const options = [
+const d = [
   {
     value: "software engineering",
     label: " Software Engineer",
@@ -98,21 +98,14 @@ const AddUser = () => {
 
   const FormValidationSchema = yup
     .object({
-      title: yup.string().required("Title is required"),
-      role: yup.mixed().required("Role is required"),
-      department: yup.mixed().required("Department is required"),
-      startDate: yup
-        .date()
-        .required("Start date is required")
-        .min(new Date(), "Start date must be greater than today"),
-      updateDate: yup
-        .date()
-        .required("End date is required")
-        .min(new Date(), "End date must be greater than today"),
+      firstname: yup.string().required("Name is required"),
+      lastname: yup.string().required("Name is required"),
+      role: yup.mixed().required("role is required"),
+      email: yup.string().required("Email is required"),
       password: yup
         .string()
-        .min(4, "Password must be at least 6 characters")
-        .max(20, "Password shouldn't be more than 20 characters")
+        .min(3, "Password must be at least 3 characters")
+        .max(10, "Password shouldn't be more than 20 characters")
         .required("Please enter password"),
       // confirm password
       confirmpassword: yup
@@ -132,22 +125,47 @@ const AddUser = () => {
     mode: "all",
   });
 
-  const onSubmit = (data) => {
-    console.log(data)
-    const user = {
-      id: uuidv4(),
-      name: data?.title,
-      role: data?.role.value,
-      // get only data value from startDate and updateDate
-      department: data?.department?.value,
-      startDate: startDate?.toISOString().split("T")[0],
-      updateDate: updateDate?.toISOString().split("T")[0],
-      des: "hi pong",
-    };
-    dispatch(pushUser(user));
-    dispatch(toggleAddModal(false));
+  const onSubmit = async (data) => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const params = {
+      username: data.username,
+      email: data.email,
+      firstname: data.firstname,
+      lastname: data.lastname,
+      role: data.role.value,
+      password: data.password
+    }
+
+    const { data: newUser } = await axios.post(`${backendUrl}/auth/register`, params
+    );
+    if (newUser) {
+      dispatch(pushUser(newUser));
+      dispatch(toggleAddModal(false));
+      toast.info("Edit Successfully", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else {
+      toast.error("Edit Failed", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+      dispatch(toggleAddModal(false));
+    }
     reset();
   };
+
 
   return (
     <div>
@@ -159,127 +177,77 @@ const AddUser = () => {
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
           <Textinput
-            name="title"
-            label="User Name"
-            placeholder="User Name"
+            placeholder="Enter your username"
+            name="username"
+            // defaultValue={editItem.firstname}
             register={register}
-            error={errors.title}
+            error={errors.firstname}
+            label="Username for login"
           />
-          <div className="grid lg:grid-cols-2 gap-4 grid-cols-1">
-            <FormGroup
-              label="Start Date"
-              id="default-picker"
-              error={errors.startDate}
-            >
-              <Controller
-                name="startDate"
-                control={control}
-                render={({ field }) => (
-                  <Flatpickr
-                    className="form-control py-2"
-                    id="default-picker"
-                    placeholder="yyyy, dd M"
-                    value={startDate}
-                    onChange={(date) => {
-                      field.onChange(date);
-                    }}
-                    options={{
-                      altInput: true,
-                      altFormat: "F j, Y",
-                      dateFormat: "Y-m-d",
-                    }}
-                  />
-                )}
-              />
-            </FormGroup>
-            <FormGroup
-              label="End Date"
-              id="default-picker2"
-              error={errors.updateDate}
-            >
-              <Controller
-                name="updateDate"
-                control={control}
-                render={({ field }) => (
-                  <Flatpickr
-                    className="form-control py-2"
-                    id="default-picker2"
-                    placeholder="yyyy, dd M"
-                    value={updateDate}
-                    onChange={(date) => {
-                      field.onChange(date);
-                    }}
-                    options={{
-                      altInput: true,
-                      altFormat: "F j, Y",
-                      dateFormat: "Y-m-d",
-                    }}
-                  />
-                )}
-              />
-            </FormGroup>
-          </div>
-          <div className={errors.assign ? "has-error" : ""}>
+          <Textinput
+            placeholder="Enter your username"
+            name="firstname"
+            // defaultValue={editItem.firstname}
+            register={register}
+            error={errors.firstname}
+            label="Firstname"
+          />
+          {/* firstname */}
+          {/* lastname */}
+          <Textinput
+            placeholder="Enter your lastname"
+            name="lastname"
+            // defaultValue={editItem.lastname}
+            register={register}
+            error={errors.lastname}
+            label="Lastname"
+          />
+          {/* role */}
+          <div className={errors.role ? "has-error" : ""}>
             <label className="form-label" htmlFor="icon_s">
-              Role
+              role
             </label>
             <Controller
               name="role"
               control={control}
-              render={({ field }) => {
-                console.log(field)
-                return (
-                  <Select
-                    {...field}
-                    options={assigneeOptions}
-                    styles={styles}
-                    className="react-select"
-                    classNamePrefix="select"
-                    components={{
-                      Option: OptionComponent,
-                    }}
-                    id="icon_s"
-                  />
-                )
-              }
-              }
-            />
-            {errors.assign && (
-              <div className=" mt-2  text-danger-500 block text-sm">
-                {errors.assign?.message || errors.assign?.label.message}
-              </div>
-            )}
-          </div>
-
-          <div className={errors.tags ? "has-error" : ""}>
-            <label className="form-label" htmlFor="icon_s">
-              Department
-            </label>
-            <Controller
-              name="department"
-              control={control}
+              // defaultValue={editItem.role}
               render={({ field }) => (
                 <Select
                   {...field}
-                  options={options}
+                  options={roleOptions}
                   styles={styles}
                   className="react-select"
                   classNamePrefix="select"
+                  isSearchable={false}
+                  // defaultValue={editItem.role}
+                  // isMulti
+                  components={{
+                    Option: OptionComponent,
+                  }}
                   id="icon_s"
                 />
               )}
             />
-            {errors.assign && (
+            {errors.role && (
               <div className=" mt-2  text-danger-500 block text-sm">
-                {errors.tags?.message || errors.tags?.label.message}
+                {errors.role?.message || errors.role?.label.message}
               </div>
             )}
           </div>
-          {/* input password */}
+
+          {/* email  */}
+          <Textinput
+            placeholder="Enter your email"
+            name="email"
+            // defaultValue={editItem.email}
+            register={register}
+            error={errors.email}
+            label="Email" />
           <Textinput
             name="password"
-            label="passwrod"
+            label="Change Passwrod"
             type="password"
+            // defaultValue={editItem.password}
             placeholder=" Enter your password"
             register={register}
             error={errors.password}
@@ -287,11 +255,11 @@ const AddUser = () => {
           <Textinput
             name="confirmpassword"
             label="confirmpassword"
+            // defaultValue={editItem.password}
             type="password"
             register={register}
             error={errors.confirmpassword}
           />
-          <Textarea label="Description" placeholder="Description" />
 
           <div className="ltr:text-right rtl:text-left">
             <button className="btn btn-dark  text-center">Add</button>

@@ -5,12 +5,12 @@ import Icon from "@/components/ui/Icon";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-const HorizentalMenu = () => {
+const HorizentalMenu = ({ role }) => {
   const location = usePathname();
   return (
     <div className="main-menu">
       <ul>
-        {topMenu?.map((item, i) => (
+        {topMenu.filter((item) => item.roles.includes(role)).map((item, i) => (
           <li
             key={i}
             className={

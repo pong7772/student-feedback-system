@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Select, { components } from "react-select";
 import Modal from "@/components/ui/Modal";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleAddModal, pushUser } from "./store";
+import { toggleAddModalDep, pushDep } from "./store";
 import Textinput from "@/components/ui/Textinput";
 import Textarea from "@/components/ui/Textarea";
 import Flatpickr from "react-flatpickr";
@@ -13,6 +13,7 @@ import * as yup from "yup";
 import { v4 as uuidv4 } from "uuid";
 
 import FormGroup from "@/components/ui/FormGroup";
+import { fetchData } from "../service";
 
 const styles = {
   multiValue: (base, state) => {
@@ -56,13 +57,13 @@ const OptionComponent = ({ data, ...props }) => {
 };
 
 const AddDepartment = () => {
-  const { openProjectModal } = useSelector((state) => state.user);
+  const { openProjectModal } = useSelector((state) => state.department);
   const dispatch = useDispatch();
 
   const FormValidationSchema = yup
     .object({
-      title: yup.string().required("Title is required"),
-     
+      name: yup.string().required("Title is required"),
+
     })
     .required();
 
@@ -77,15 +78,18 @@ const AddDepartment = () => {
     mode: "all",
   });
 
-  const onSubmit = (data) => {
-    console.log(data)
-    const user = {
-      id: uuidv4(),
-      name: data?.title,
-     
-    };
-    dispatch(pushUser(user));
-    dispatch(toggleAddModal(false));
+  const onSubmit = async (data) => {
+    try {
+      await fetchData("/department/create", data, "POST").then((res) => {
+        if (res) {
+          dispatch(pushDep(res));
+          dispatch(toggleAddModalDep(false));
+        }
+      });
+
+    } catch (error) {
+      console.log(error)
+    }
     reset();
   };
 
@@ -95,17 +99,17 @@ const AddDepartment = () => {
         title="Create User"
         labelclassName="btn-outline-dark"
         activeModal={openProjectModal}
-        onClose={() => dispatch(toggleAddModal(false))}
+        onClose={() => dispatch(toggleAddModalDep(false))}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
           <Textinput
-            name="title"
+            name="name"
             label="Department"
             placeholder="Enter Department Name"
             register={register}
             error={errors.title}
           />
-          
+
           <div className="ltr:text-right rtl:text-left">
             <button className="btn btn-dark  text-center">Add</button>
           </div>

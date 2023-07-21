@@ -1,4 +1,5 @@
 import axios from "axios";
+import { moment } from "moment";
 import { toast } from "react-toastify";
 
 export const fetchData = async (url, parameter = {}, method = "POST") => {
@@ -28,10 +29,11 @@ export const fetchData = async (url, parameter = {}, method = "POST") => {
     }
     params = formData;
   }
+
   return axios({
     method: method,
     url: full_url,
-    data: JSON.stringify(params),
+    data: params,
     headers: headers,
   })
     .then((res) => {
@@ -149,7 +151,8 @@ export const fetchData = async (url, parameter = {}, method = "POST") => {
 // other helper methods
 
 export const formatDateClient = (date) => {
-  return moment(date).format("DD/MM/YYYY");
+  // console.log(date.toString());
+  return moment(date).format("dd/MM/yyyy");
 };
 export const formatDateServer = (date) => {
   return moment(date).format("YYYY-MM-DD");

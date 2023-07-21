@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import Loading from "@/components/Loading";
+import Button from "@/components/ui/Button";
 
 const schema = yup
   .object({
@@ -80,8 +81,8 @@ const LoginForm = () => {
           progress: undefined,
           theme: "light",
         });
-        setLoading(!loading)
         router.push('/crm')
+        setLoading(false)
       } else {
         setLoading(false)
         toast.error("Login failed. Please try again later.", {
@@ -97,6 +98,7 @@ const LoginForm = () => {
       }
 
     } catch (error) {
+      setLoading(false)
       if (error?.response?.status === 400) {
         setLoginError("Invalid username or password ")
       }
@@ -151,8 +153,9 @@ const LoginForm = () => {
           <div style={{ color: "#ff4d4f", fontWeight: "bold", marginBottom: "20px" }}>{loginError}</div>
         </div>
       }
+      {/* change bg color base on loading */}
 
-      <button className="btn btn-dark block w-full text-center" type="submit">
+      <button className={` block w-full text-center ${loading ? "btn btn-primary" : "btn btn-dark"}`} type="submit">
         {loading ?
           < div className="flex justify-center items-center">
             <p>

@@ -9,8 +9,9 @@ import ListLoading from "@/components/skeleton/ListLoading";
 import TableLoading from "@/components/skeleton/Table";
 import AddAcademic from "@/components/partials/app/academic-service-all/AddAcademic";
 import EditAcademic from "@/components/partials/app/academic-service-all/EditAcademic";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { batchToggleAddModal, courseToggleAddModal, semesterToggleAddModal } from "@/components/partials/app/academic-service-all/store";
+import { fetchData } from "@/components/partials/app/service";
 
 
 const AcademicPostPage = () => {
@@ -18,17 +19,138 @@ const AcademicPostPage = () => {
     // use width is necessary for the repsonsive layout
     const { width, breakpoints } = useWidth();
     const [isLoaded, setIsLoaded] = useState(false);
+    const [allCourses, setAllCourses] = useState([]);
+    const [allBatches, setAllBatches] = useState([]);
+    const [allSemesters, setAllSemesters] = useState([]);
+    const [allLecturer, setAllLecturer] = useState([])
     const { courses } = useSelector((state) => state.course);
     const { batches } = useSelector((state) => state.batch);
     const { semesters } = useSelector((state) => state.semester)
+
     const dispatch = useDispatch();
     useEffect(() => {
         // this is the loading animation need to implemnent with backend  
         setIsLoaded(true);
-        setTimeout(() => {
-            setIsLoaded(false);
-        }, 1000);
-    }, [filler]);
+        fetchAllBatch();
+        fetchAllCourse();
+        fetchAllSemester();
+        fetchAllLecturer();
+    }, [filler, courses, batches, semesters]);
+    const fetchAllBatch = async () => {
+        try {
+            await fetchData(
+                "/batch/get-all?page=0&size=1000", {},
+                "GET"
+            ).then(batch => {
+                if (batch) {
+                    setAllBatches(batch.content)
+                    setIsLoaded(false)
+                }
+            }
+            )
+
+        } catch (error) {
+            setIsLoaded(false)
+            toast.error(
+                error,
+                {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            )
+        }
+    }
+
+    const fetchAllCourse = async () => {
+        try {
+            await fetchData(
+                "/course/get-all?page=0&size=1000", {}, "GET"
+            ).then(course => {
+                if (course) {
+                    setAllCourses(course.content)
+                    setIsLoaded(false)
+                }
+            }
+            )
+
+        } catch (error) {
+            setIsLoaded(false)
+            toast.error(
+                error,
+                {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            )
+        }
+    }
+    const fetchAllSemester = async () => {
+        try {
+            await fetchData(
+                "/semester/get-all?page=0&size=1000", {}, "GET"
+            ).then(semester => {
+                if (semester) {
+                    setAllSemesters(semester.content)
+                    setIsLoaded(false)
+                }
+            }
+            )
+
+        } catch (error) {
+            setIsLoaded(false)
+            toast.error(
+                error,
+                {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            )
+        }
+    }
+    const fetchAllLecturer = async () => {
+        try {
+            await fetchData(
+                "/lecturer/get-all-lecturer?page=0&size=100", {}, "GET"
+            ).then(lecturer => {
+                if (lecturer) {
+                    setAllLecturer(lecturer.contents)
+                    setIsLoaded(false)
+                }
+            }
+            )
+
+        } catch (error) {
+            setIsLoaded(false)
+            toast.error(
+                error,
+                {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                }
+            )
+        }
+    }
+
 
     return (
         <div>
@@ -96,20 +218,20 @@ const AcademicPostPage = () => {
 
             {filler === "course" && !isLoaded && (
                 <div>
-                    <AcademicList projects={courses} filler={filler} />
+                    <AcademicList projects={allCourses} filler={filler} />
                 </div>
             )}
             {filler === "batch" && !isLoaded && (
                 <div>
-                    <AcademicList projects={batches} filler={filler} />
+                    <AcademicList projects={allBatches} filler={filler} />
                 </div>
             )}
             {filler === "semester" && !isLoaded && (
                 <div>
-                    <AcademicList projects={semesters} filler={filler} />
+                    <AcademicList projects={allSemesters} filler={filler} />
                 </div>
             )}
-            <AddAcademic filler={filler} />
+            <AddAcademic filler={filler} lecturerOption={allLecturer} semesterOption={allSemesters} batchOption={allBatches} />
             {/* <EditAcademic filler={filler} /> */}
         </div>
     );

@@ -11,6 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormGroup from "@/components/ui/FormGroup";
 import * as yup from "yup";
 import { v4 as uuidv4 } from "uuid";
+import { fetchData } from '../service';
 const styles = {
     multiValue: (base, state) => {
         return state.data.isFixed ? { ...base, opacity: "0.5" } : base;
@@ -28,15 +29,16 @@ const styles = {
         fontSize: "14px",
     }),
 };
-function CourseForm({ assigneeOptions, option, OptionComponent }) {
+function CourseForm({ option, OptionComponent, assigneeOptions }) {
 
     const dispatch = useDispatch();
 
     const FormValidationSchema = yup
         .object({
-            course: yup.string().required("Title is required"),
-            rating: yup.mixed().required("Role is required"),
-            takeIn: yup.mixed().required("Take In is required"),
+            name: yup.string().required("Course Name is required"),
+            credit: yup.string().required("Credit Amount is required"),
+            semester: yup.mixed().required("Semester is required"),
+            lecturer: yup.mixed().required("Lecturer is required"),
         })
         .required();
 
@@ -52,15 +54,28 @@ function CourseForm({ assigneeOptions, option, OptionComponent }) {
     });
 
 
-    const onSubmit = (data) => {
-        const course = {
-            id: uuidv4(),
-            course: data.course,
-            takeIn: data.takeIn.value,
-            lecturer: data.lecturer.value,
-            rating: data.rating,
-        };
-        dispatch(pushCourse(course));
+    const onSubmit = async (data) => {
+        // alert(data)
+        console.log(data)
+        const params = {
+            name: data.name,
+            credit: data.credit,
+            semesterId: data.semester.value,
+            lecturerId: data.lecturer.value,
+        }
+        // console.log(params)
+        await fetchData(
+            "/course/create",
+            params,
+            "POST"
+        ).then((res) => {
+            dispatch(pushCourse(res));
+            dispatch(courseToggleAddModal(false));
+        }
+        ).catch((err) => {
+            console.log(err);
+        }
+        );
         dispatch(courseToggleAddModal(false));
         reset();
     };
@@ -68,17 +83,24 @@ function CourseForm({ assigneeOptions, option, OptionComponent }) {
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
             <Textinput
-                name="course"
+                name="name"
                 label="Course Name"
                 placeholder="Enter your course name"
                 register={register}
-                error={errors.course}
+
+            />
+            <Textinput
+                name="credit"
+                label="Credit Amount"
+                placeholder="Enter Credit Amount"
+                register={register}
+
             />
             <label className="form-label" htmlFor="icon_s">
-                Take IN Semester
+                Assign To Semester
             </label>
             <Controller
-                name="takeIn"
+                name="semester"
                 control={control}
                 render={({ field }) => {
                     return (
@@ -125,15 +147,6 @@ function CourseForm({ assigneeOptions, option, OptionComponent }) {
 
             </div>
 
-            <div className={errors.tags ? "has-error" : ""}>
-                <Textinput
-                    name="rating"
-                    label="Rating"
-                    placeholder="Enter Rating"
-                    register={register}
-                    error={errors.rating}
-                />
-            </div>
 
             <div className="ltr:text-right rtl:text-left ">
                 <button className="btn btn-dark  text-center">Add</button>

@@ -13,27 +13,40 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import { fetchData } from "../service";
 
-const UserList = ({ projects }) => {
+const UserList = ({ users, count }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  // console.log(users)
+  const handleRemoveUser = async (accountId) => {
+    const res = await fetchData("/user/delete-user?id=" + accountId, {}, "DELETE").then((res) => {
+      if (res) {
+        dispatch(removeUser(accountId));
+      }
+    }
+    ).catch((err) => {
+      console.log(err)
+    }
+    )
+  }
+
 
   const COLUMNS = [
     {
-      Header: "Name",
-      accessor: "name",
+      Header: "UserName",
+      accessor: "username",
       Cell: (row) => {
         return (
           <div className="flex space-x-3 items-center text-left rtl:space-x-reverse">
             <div className="flex-none">
               <div className="h-10 w-10 rounded-full text-sm bg-[#E0EAFF] dark:bg-slate-700 flex flex-col items-center justify-center font-medium -tracking-[1px]">
-                {row?.cell?.value.charAt(0) +
-                  row?.cell?.value.charAt(row?.cell?.value.length - 1)}
+                {row?.cell?.value?.substring(0, 1).toUpperCase()}
               </div>
             </div>
             <div className="flex-1 font-medium text-sm leading-4 whitespace-nowrap">
-              {row?.cell?.value.length > 20
-                ? row?.cell?.value.substring(0, 20) + "..."
+              {row?.cell?.value?.length > 20
+                ? row?.cell?.value?.substring(0, 20) + "..."
                 : row?.cell?.value}
             </div>
           </div>
@@ -41,19 +54,32 @@ const UserList = ({ projects }) => {
       },
     },
     {
-      Header: "Create At",
-      accessor: "startDate",
+      Header: "Firstname",
+      accessor: "firstname",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return (
+          <div>
+            <div className="flex justify-end sm:justify-start lg:justify-end xl:justify-start -space-x-1 rtl:space-x-reverse">
+              {row?.cell?.value}
+            </div>
+          </div>
+        );
       },
     },
     {
-      Header: "Update Date",
-      accessor: "updateDate",
+      Header: "Lastname",
+      accessor: "lastname",
       Cell: (row) => {
-        return <div>{row?.cell?.value}</div>;
+        return (
+          <div>
+            <div className="flex justify-end sm:justify-start lg:justify-end xl:justify-start -space-x-1 rtl:space-x-reverse">
+              {row?.cell?.value}
+            </div>
+          </div>
+        );
       },
     },
+
     {
       Header: "Roles",
       accessor: "role",
@@ -68,8 +94,8 @@ const UserList = ({ projects }) => {
       },
     },
     {
-      Header: "Department",
-      accessor: "department",
+      Header: "Email",
+      accessor: "email",
       Cell: (row) => {
         return (
           <div>
@@ -131,20 +157,20 @@ const UserList = ({ projects }) => {
       icon: "heroicons-outline:eye",
       doit: (item) => router.push(`/user/${item.id}`),
     },
-    {
-      name: "edit",
-      icon: "heroicons:pencil-square",
-      doit: (item) => dispatch(updateUser(item)),
-    },
+    // {
+    //   name: "edit",
+    //   icon: "heroicons:pencil-square",
+    //   doit: (item) => dispatch(updateUser(item)),
+    // },
     {
       name: "delete",
       icon: "heroicons-outline:trash",
-      doit: (item) => dispatch(removeUser(item.id)),
+      doit: (item) => handleRemoveUser(item?.id),
     },
   ];
 
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => projects, [projects]);
+  const data = useMemo(() => users, [users]);
 
   const tableInstance = useTable(
     {
@@ -175,13 +201,17 @@ const UserList = ({ projects }) => {
     setGlobalFilter,
     prepareRow,
   } = tableInstance;
-
   const { globalFilter, pageIndex, pageSize } = state;
   return (
     <>
+
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">User List</h4>
+          <h4 className="card-title">User List </h4>
+          <div className="flex items-center space-x-2">
+            <div className="text-lg text-slate-500">Total User</div>
+            <div className="text-lg text-green-500 font-bold">{count}</div>
+          </div>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
@@ -222,28 +252,39 @@ const UserList = ({ projects }) => {
                   className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                   {...getTableBodyProps}
                 >
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <tr
-                        key={`ex-tr2-${row.id}`}
-                        {...row.getRowProps()}
-                        className=" even:bg-slate-100 dark:even:bg-slate-700"
-                      >
-                        {row.cells.map((cell) => {
-                          return (
-                            <td
-                              {...cell.getCellProps()}
-                              className="table-td"
-                              key={`ex-td-${cell.column.id}`}
-                            >
-                              {cell.render("Cell")}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
+                  {users.length === 0 ?
+                    <tr className="text-center mt-2"><td colSpan={6}>
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="text-xl font-medium text-slate-600 dark:text-slate-400">
+                          🙅🏻‍♂️ No User Found
+                        </div>
+                      </div>
+
+                    </td></tr> :
+                    page.map((row) => {
+                      prepareRow(row);
+                      return (
+                        <tr
+                          key={`ex-tr2-${row.id}`}
+                          {...row.getRowProps()}
+                          className=" even:bg-slate-100 dark:even:bg-slate-700"
+                        >
+                          {row.cells.map((cell) => {
+                            return (
+                              <td
+                                {...cell.getCellProps()}
+                                className="table-td"
+                                key={`ex-td-${cell.column.id}`}
+                              >
+                                {cell.render("Cell")}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })
+
+                  }
                 </tbody>
               </table>
             </div>

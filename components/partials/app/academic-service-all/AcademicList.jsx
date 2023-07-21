@@ -6,6 +6,7 @@ import Dropdown from "@/components/ui/Dropdown";
 import { Menu } from "@headlessui/react";
 import { removeUser, updateUser } from "./store";
 import { useRouter } from "next/navigation";
+import Moment from "moment";
 import {
   useTable,
   useRowSelect,
@@ -21,19 +22,19 @@ const AcademicList = ({ projects, filler }) => {
   const COLUMNS = (filler == "course") ? [
     {
       Header: "Course",
-      accessor: "course",
+      accessor: "name",
       Cell: (row) => {
         return (
           <div className="flex space-x-3 items-center text-left rtl:space-x-reverse">
             <div className="flex-none">
               <div className="h-10 w-10 rounded-full text-sm bg-[#E0EAFF] dark:bg-slate-700 flex flex-col items-center justify-center font-medium -tracking-[1px]">
-                {row?.cell?.value.charAt(0) +
-                  row?.cell?.value.charAt(row?.cell?.value.length - 1)}
+                {row?.cell?.value?.charAt(0) +
+                  row?.cell?.value?.charAt(row?.cell?.value.length - 1)}
               </div>
             </div>
             <div className="flex-1 font-medium text-sm leading-4 whitespace-nowrap">
-              {row?.cell?.value.length > 20
-                ? row?.cell?.value.substring(0, 20) + "..."
+              {row?.cell?.value?.length > 40
+                ? row?.cell?.value?.substring(0, 40) + "..."
                 : row?.cell?.value}
             </div>
           </div>
@@ -41,32 +42,40 @@ const AcademicList = ({ projects, filler }) => {
       },
     },
     {
-      Header: "Lecturer",
-      accessor: "lecturer",
+      Header: "Credits",
+      accessor: "credit",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <div
+          className="h-6 w-24 flex-nowrap rounded justify-center flex text-xs text-white-600 font-medium mx-2 bg-green-300 items-center mb-2 dark:bg-green-500 dark:text-white "
+        >
+          {row?.cell?.value} Credits
+        </div>;
       },
     },
     {
-      Header: "Rating",
-      accessor: "rating",
-      Cell: (row) => {
-        return <div>{row?.cell?.value}</div>;
-      },
-    },
-    {
-      Header: "Take IN",
-      accessor: "takeIn",
+      Header: "FeedbackForm",
+      accessor: "feedbackForms",
       Cell: (row) => {
         return (
           <div>
-            <div className="flex justify-end sm:justify-start lg:justify-end xl:justify-start -space-x-1 rtl:space-x-reverse">
-              {row?.cell?.value}
+            <div className=" flex-col object-contain p-2 rounded-sm bg-green-100  " >
+              {row?.cell?.value?.length !== 0 ? row?.cell?.value?.map((form, index) => (
+
+                <div key={index} className=" flex items-center justify-start text-gray-600 mx-1">
+                  <div className="text-xs text-white-600 font-medium mx-1">
+                    {index + 1} / {form?.title} have {form?.questions.length} Question
+                  </div>
+                </div>
+
+              )) : <div className="text-red-500">No Semester</div>
+              }
+
             </div>
           </div>
         );
       },
     },
+
     {
       Header: "action",
       accessor: "action",
@@ -119,12 +128,12 @@ const AcademicList = ({ projects, filler }) => {
           <div className="flex space-x-3 items-center text-left rtl:space-x-reverse">
             <div className="flex-none">
               <div className="h-10 w-10 rounded-full text-sm bg-[#E0EAFF] dark:bg-slate-700 flex flex-col items-center justify-center font-medium -tracking-[1px]">
-                {row?.cell?.value.charAt(0)}
+                {row?.cell?.value}
               </div>
             </div>
             <div className="flex-1 font-medium text-sm leading-4 whitespace-nowrap">
-              {filler}-{row?.cell?.value.length > 20
-                ? row?.cell?.value.substring(0, 20) + "..."
+              {filler}-{row?.cell?.value?.length > 20
+                ? row?.cell?.value?.substring(0, 20) + "..."
                 : row?.cell?.value}
             </div>
           </div>
@@ -133,18 +142,58 @@ const AcademicList = ({ projects, filler }) => {
     },
     {
       Header: "Create At",
-      accessor: "startDate",
+      accessor: "createdAt",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{Moment(row?.cell?.value).format("DD-MM-YYYY")}</span>;
       },
     },
     {
-      Header: "End Date",
-      accessor: "endDate",
+      Header: "Update Date",
+      accessor: "updatedAt",
       Cell: (row) => {
-        return <div>{row?.cell?.value}</div>;
+        return <div>{Moment(row?.cell?.value).format("DD-MM-YYYY")}</div>;
       },
     },
+    {
+      Header: "Semester",
+      accessor: "semesters",
+      Cell: (row) => {
+        return (
+          <div>
+            <div className=" flex-col object-contain p-2 rounded-sm bg-green-100  " >
+              {row?.cell?.value?.length !== 0 ? row?.cell?.value?.map((semester, index) => (
+
+                <div key={index} >
+                  <div
+                    className=" flex-col flex-nowrap rounded justify-start text-xs text-green-500 text-white-600 font-medium mx-2  items-center mb-2 dark:text-gray-900 "
+                  >
+                    On Semester {semester?.semesterNumber} have {semester?.courses?.length} Course :
+                    {
+                      semester?.courses?.length !== 0 ? semester?.courses?.map((course, index) => (
+                        <div key={index} className=" flex items-center justify-start text-gray-600 mx-1">
+                          <div className="text-xs text-white-600 font-medium mx-1">
+                            {index + 1} / {course?.name} have {course?.credit} credits
+                          </div>
+                        </div>
+                      )) :
+                        <div className="text-xs text-red-600 font-medium mx-1">
+                          No Course
+                        </div>
+
+                    }
+                  </div>
+
+                </div>
+
+              )) : <div className="text-red-500">No Semester</div>
+              }
+
+            </div>
+          </div>
+        );
+      },
+    },
+
     {
       Header: "action",
       accessor: "action",
@@ -190,18 +239,18 @@ const AcademicList = ({ projects, filler }) => {
     },
   ] : [{
     Header: "Semester",
-    accessor: "semester",
+    accessor: "semesterNumber",
     Cell: (row) => {
       return (
         <div className="flex space-x-3 items-center text-left rtl:space-x-reverse">
           <div className="flex-none">
             <div className="h-10 w-10 rounded-full text-sm bg-[#E0EAFF] dark:bg-slate-700 flex flex-col items-center justify-center font-medium -tracking-[1px]">
-              {row?.cell?.value.charAt(0)}
+              {row?.cell?.value}
             </div>
           </div>
           <div className="flex-1 font-medium text-sm leading-4 whitespace-nowrap">
-            {filler}-{row?.cell?.value.length > 20
-              ? row?.cell?.value.substring(0, 20) + "..."
+            {filler}-{row?.cell?.value?.length > 20
+              ? row?.cell?.value?.substring(0, 20) + "..."
               : row?.cell?.value}
           </div>
         </div>
@@ -224,11 +273,37 @@ const AcademicList = ({ projects, filler }) => {
   },
   {
     Header: "Credits",
-    accessor: "credits",
+    accessor: "credit",
     Cell: (row) => {
       return <div>{row?.cell?.value}</div>;
     },
   },
+  {
+    Header: "Courses",
+    accessor: "courses",
+    Cell: (row) => {
+      return (
+        <div>
+          <div className=" flex-col object-contain p-2 rounded-sm bg-green-100  " >
+            {row?.cell?.value?.length !== 0 ? row?.cell?.value?.map((course, index) => (
+
+              <div key={index} >
+                <div
+                  className=" flex-col flex-nowrap rounded justify-start text-xs text-green-500 text-white-600 font-medium mx-2  items-center mb-2 dark:text-gray-900 "
+                >
+                  {index + 1} / On Course {course?.name} have {course?.feedbackForms?.length} FeedbackForm
+                </div>
+              </div>
+
+            )) : <div className="text-red-500">No Course</div>
+            }
+
+          </div>
+        </div>
+      );
+    },
+  },
+
   {
     Header: "action",
     accessor: "action",
@@ -275,16 +350,12 @@ const AcademicList = ({ projects, filler }) => {
 
 
   const actions = [
-    {
-      name: "view",
-      icon: "heroicons-outline:eye",
-      doit: (item) => router.push(`/user/${item.id}`),
-    },
-    {
-      name: "edit",
-      icon: "heroicons:pencil-square",
-      doit: (item) => dispatch(updateUser(item)),
-    },
+
+    // {
+    //   name: "edit",
+    //   icon: "heroicons:pencil-square",
+    //   doit: (item) => dispatch(updateUser(item)),
+    // },
     {
       name: "delete",
       icon: "heroicons-outline:trash",

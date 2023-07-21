@@ -31,8 +31,10 @@ const profile = () => {
         name: res.firstname + " " + res.lastname,
         skill: "Developer"
       })
+      setIsLoaded(false);
     }
     ).catch((err) => {
+      setIsLoaded(false);
       toast.error(err, {
         position: "top-right",
         autoClose: 1500,
@@ -49,7 +51,6 @@ const profile = () => {
   useEffect(() => {
     setIsLoaded(true);
     fetchProfile()
-    setIsLoaded(false);
   }, [profiles]);
 
   return (
@@ -72,6 +73,7 @@ const profile = () => {
               </h4>
             </div>
             <Button
+              disabled={users?.role === "ADMIN" ? false : true}
               icon="heroicons:edit"
               text="Edit User Profile"
               className={"bg-slate-900 dark:bg-slate-700 text-white  text-whiteh-min text-sm font-normal"}
@@ -150,7 +152,7 @@ const profile = () => {
         </div>
       }
       {
-        isAuth &&
+        isAuth && users?.role === "ADMIN" &&
         <EditProfile />
       }
     </div >

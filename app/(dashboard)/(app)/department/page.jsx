@@ -1,15 +1,16 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
-import { toggleAddModalDep } from '@/components/partials/app/department-service/store';
+import { ToastContainer, toast } from 'react-toastify';
+import { setDep, toggleAddModalDep } from '@/components/partials/app/department-service/store';
 import GridLoading from '@/components/skeleton/Grid';
 import TableLoading from '@/components/skeleton/Table';
 import Button from '@/components/ui/Button';
 import useWidth from '@/hooks/useWidth';
 import AddDepartment from '@/components/partials/app/department-service/AddDepartment';
-import EditDepartment from '@/components/partials/app/department-service/EditDepartment';
+import EditDepartment from "../../../../components/partials/app/department-service/EditDepartment"
 import DepartmentList from '@/components/partials/app/department-service/DepartmentList';
+import { fetchData } from '@/components/partials/app/service';
 
 
 const DepartmentPostPage = () => {
@@ -17,16 +18,39 @@ const DepartmentPostPage = () => {
 	// use width is necessary for the repsonsive layout
 	const { width, breakpoints } = useWidth();
 	const [isLoaded, setIsLoaded] = useState(false);
-	const { deps } = useSelector((state) => state.user);
+	const { deps } = useSelector((state) => state.department);
+	const [allDepartment, setAllDepartment] = useState([]);
 	const dispatch = useDispatch();
 	useEffect(
 		() => {
 			setIsLoaded(true);
-			setTimeout(() => {
-				setIsLoaded(false);
-			}, 1000);
-		},
-	);
+			fetchDepartments();
+
+		}, [deps]);
+	const fetchDepartments = async () => {
+		try {
+			await fetchData("/department/get-all?page=0&size=1000", {}, "GET").then((res) => {
+				if (res) {
+					setAllDepartment(res?.content);
+					dispatch(setDep(res?.content))
+					setIsLoaded(false);
+				}
+			});
+		} catch (error) {
+			console.log(error);
+			toast.error(error, {
+				position: "top-right",
+				autoClose: 1500,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: "light",
+			});
+		}
+	};
+
 
 	return (
 		<div>
@@ -53,7 +77,7 @@ const DepartmentPostPage = () => {
 
 			{filter === 'list' && !isLoaded && (
 				<div>
-					<DepartmentList projects={deps} />
+					<DepartmentList departments={allDepartment} />
 				</div>
 			)}
 

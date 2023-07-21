@@ -7,6 +7,7 @@ import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
 import { Menu } from "@headlessui/react";
+import Moment from "moment";
 import {
   useTable,
   useRowSelect,
@@ -14,36 +15,38 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import { removeDep, toggleEditModal, updateDep } from "./store";
+import { fetchData } from "../service";
+import { toast } from "react-toastify";
 
-const DepartmentList = () => {
+const DepartmentList = ({ departments }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [departments, setDepartments] = useState([]);
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const data = await getAllDepartments();
-        setDepartments(data);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
+  const updateDepart = async (item) => {
+    dispatch(updateDep(item));
 
-    fetchDepartments();
-  }, []);
-
-  const getAllDepartments = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8080/api/v1/department/get-all?page=0&size=10`);
-      console.log(response)
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response.data.message);
-    }
   };
+  const handleDelete = async (item) => {
+    fetchData(
+      "/department/delete?id=" + item.id,
+      {},
+      "GET"
+    ).then((res) => {
+      if (res) {
+        dispatch(removeDep(item));
+      }
+    }).catch(error => {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT
+      })
+    })
+
+  };
+
+
   const COLUMNS = [
- 
+
     {
       Header: "Department",
       accessor: "name",
@@ -56,15 +59,32 @@ const DepartmentList = () => {
       Header: "Create At",
       accessor: "createdAt",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{Moment(row?.cell?.value).format("DD-MM-YYYY")}</span>;
       },
     },
 
     {
       Header: "Batch",
-      accessor: "batch",
+      accessor: "batches",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return (
+          <div>
+            <div className=" flex-col flex-nowrap " >
+              {row?.cell?.value?.length !== 0 ? row?.cell?.value?.map((batch, batchIndex) => (
+                <div key={batchIndex} >
+                  <div
+                    className="h-6 w-24 flex-nowrap rounded justify-center flex text-xs text-white-600 font-medium mx-2 bg-green-300 items-center mb-2 dark:bg-green-500 dark:text-white "
+                  >
+                    Have Batch : {batch?.batchNumber}
+                  </div>
+                </div>
+
+              )) : <div className="text-red-500">No Batch</div>
+              }
+
+            </div>
+          </div>
+        );
       },
     },
 
@@ -113,20 +133,20 @@ const DepartmentList = () => {
     },
   ];
   const actions = [
-    {
-      name: "view",
-      icon: "heroicons-outline:eye",
-      doit: (item) => router.push(`/user/${item.id}`),
-    },
+    // {
+    //   name: "view",
+    //   icon: "heroicons-outline:eye",
+    //   doit: (item) => router.push(`/user/${item.id}`),
+    // },
     {
       name: "edit",
       icon: "heroicons:pencil-square",
-      doit: (item) => dispatch(updateUser(item)),
+      doit: (item) => updateDepart(item),
     },
     {
       name: "delete",
       icon: "heroicons-outline:trash",
-      doit: (item) => dispatch(removeUser(item.id)),
+      doit: (item) => handleDelete(item),
     },
   ];
 
@@ -170,11 +190,15 @@ const DepartmentList = () => {
     <>
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Project List</h4>
+          <h4 className="card-title">Department List</h4>
+          <div className="flex items-center space-x-2">
+            <div className="text-lg text-slate-500">Total User</div>
+            <div className="text-lg text-green-500 font-bold">{departments?.length}</div>
+          </div>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden ">
+            <div>
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps}

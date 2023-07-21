@@ -38,6 +38,7 @@
     "jose": "^4.14.4",
     "leaflet": "^1.9.3",
     "lucide-react": "^0.115.0",
+    "moment": "^2.29.4",
     "next": "^13.2.3",
     "next-auth": "^4.22.1",
     "next-intl": "2.11.0-beta.16",
