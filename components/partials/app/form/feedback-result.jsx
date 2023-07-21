@@ -27,8 +27,8 @@ const FeedBackResult = ({ projects }) => {
         return (
           <div className="flex space-x-3 items-center text-left rtl:space-x-reverse">
             <div className="flex-1 font-medium text-sm leading-4 whitespace-nowrap">
-              {row?.cell?.value?.length > 30
-                ? row?.cell?.value?.substring(0, 30) + "..."
+              {row?.cell?.value.length > 30
+                ? row?.cell?.value.substring(0, 30) + "..."
                 : row?.cell?.value}
             </div>
           </div>

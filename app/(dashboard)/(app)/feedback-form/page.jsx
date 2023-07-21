@@ -3,7 +3,7 @@
 import AddFeedback from "@/components/partials/app/form/feedback-form-service/AddFeedback";
 import EditFeedback from "@/components/partials/app/form/feedback-form-service/EditFeedback";
 import FeedbackList from "@/components/partials/app/form/feedback-form-service/FeedbackList";
-import SubmitFeedback from "@/components/partials/app/form/feedback-form-service/SubmitFeedback";
+// import SubmitFeedback from "@/components/partials/app/form/feedback-form-service/SubmitFeedback";
 import {
   toggleAddModal,
   toggleSubmitModal,
@@ -82,13 +82,13 @@ const Feedback = () => {
             ))
           }
 
-          <Button
+          {/* <Button
             icon="heroicons-outline:plus"
             text="Submit Feedback"
             className="btn-dark dark:bg-slate-800  h-min text-sm font-normal"
             iconClass=" text-lg"
             onClick={() => dispatch(toggleSubmitModal(true))}
-          />
+          /> */}
         </div>
       </div>
 
@@ -101,7 +101,7 @@ const Feedback = () => {
       )}
 
       <AddFeedback />
-      <SubmitFeedback />
+      {/* <SubmitFeedback /> */}
       <EditFeedback />
     </div>
   );

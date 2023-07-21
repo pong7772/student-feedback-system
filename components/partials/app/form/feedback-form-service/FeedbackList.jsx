@@ -145,11 +145,11 @@ const FeedbackList = ({ feedback }) => {
       icon: "heroicons:pencil-square",
       doit: (item) => updateFeedback(item),
     },
-    // {
-    //   name: "delete",
-    //   icon: "heroicons-outline:trash",
-    //   doit: (item) => dispatch(remove(item.id)),
-    // },
+    {
+      name: "submit",
+      icon: "heroicons-outline:check",
+      doit: (item) => router.push(`/feedback-form/submit/${item.id}`),
+    },
   ];
 
 
