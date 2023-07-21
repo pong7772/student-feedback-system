@@ -1,12 +1,14 @@
+
+'use client';
 import React, { useState, useMemo, useEffect } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
-import ProgressBar from "@/components/ui/ProgressBar";
 import { Menu } from "@headlessui/react";
-import { useRouter } from "next/navigation";
-import { Button } from 'antd';
+import Moment from "moment";
 import {
   useTable,
   useRowSelect,
@@ -14,48 +16,120 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import { remove, toggleEditModal, update } from "./store";
 
-const FeedBackResult = ({ projects }) => {
+const FeedbackList = ({ feedback }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+
+  const updateFeedback = async (item) => {
+    dispatch(update(item));
+
+  };
+
   const COLUMNS = [
     {
-      Header: "Course",
-      accessor: "name",
+      Header: "No.",
+      accessor: "id",
       Cell: (row) => {
-        return (
-          <div className="flex space-x-3 items-center text-left rtl:space-x-reverse">
-            <div className="flex-1 font-medium text-sm leading-4 whitespace-nowrap">
-              {row?.cell?.value?.length > 30
-                ? row?.cell?.value?.substring(0, 30) + "..."
-                : row?.cell?.value}
-            </div>
-          </div>
-        );
+        return <span>{row?.cell?.value}</span>;
       },
     },
+
     {
-      Header: "Lecturer",
-      accessor: "lecturerName",
+      Header: "Title",
+      accessor: "title",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+
+    {
+      Header: "Description",
+      accessor: "description",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "Voting Amount",
-      accessor: "totalVote",
+        Header: "Create At",
+        accessor: "createdAt",
+        Cell: (row) => {
+          return <span>{Moment(row?.cell?.value).format("DD-MM-YYYY")}</span>;
+        },
+      },
+    // {
+    //   Header: "Created By",
+    //   accessor: "createdBy",
+    //   Cell: (row) => {
+    //     return <span>{row?.cell?.value}</span>;
+    //   },
+    // },
+    {
+        Header: "Updated At",
+        accessor: "updatedAt",
+        Cell: (row) => {
+          return <span>{Moment(row?.cell?.value).format("DD-MM-YYYY")}</span>;
+        },
+      },
+    // {
+    //   Header: "Updated By",
+    //   accessor: "updatedBy",
+    //   Cell: (row) => {
+    //     return <span>{row?.cell?.value}</span>;
+    //   },
+    // },
+
+    {
+      Header: "Total Questions",
+      accessor: "questions",
       Cell: (row) => {
-        return <div>{row?.cell?.value}</div>;
+        return <span>{row?.cell?.value?.length}</span>;
       },
     },
-    // router.push(`/response?lecture=${lecture}&course=${selectedValue}`);
+
     {
       Header: "action",
-      accessor: "id",
+      accessor: "action",
       Cell: (row) => {
         return (
-          <Button onClick={() => router.push(`/result?${row?.cell?.value}`)} className="mx-2 border-[var(--base-blue)] text-[var(--base-blue)]">View FeedBack</Button>
+          <div>
+            <Dropdown
+              classMenuItems="right-0 w-[140px] top-[110%] "
+              label={
+                <span className="text-xl text-center block w-full">
+                  <Icon icon="heroicons-outline:dots-vertical" />
+                </span>
+              }
+            >
+              <div className="divide-y divide-slate-100 dark:divide-slate-800 mb-2">
+                {actions.map((item, i) => (
+                  <Menu.Item
+                    key={i}
+                    onClick={() => item.doit(row?.row?.original)}
+                  >
+                    <div
+                      className={`
+                
+                  ${
+                    item.name === "delete"
+                      ? "bg-danger-500 text-danger-500 bg-opacity-30   hover:bg-opacity-100 hover:text-white"
+                      : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
+                  }
+                   w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+                   first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse `}
+                    >
+                      <span className="text-base">
+                        <Icon icon={item.icon} />
+                      </span>
+                      <span>{item.name}</span>
+                    </div>
+                  </Menu.Item>
+                ))}
+              </div>
+            </Dropdown>
+          </div>
         );
       },
     },
@@ -64,14 +138,24 @@ const FeedBackResult = ({ projects }) => {
     {
       name: "view",
       icon: "heroicons-outline:eye",
-      doit: (item) => router.push('/feedback-result'),
+      doit: (item) => router.push(`/feedback-form/${item.id}`),
     },
-
-
+    {
+      name: "edit",
+      icon: "heroicons:pencil-square",
+      doit: (item) => updateFeedback(item),
+    },
+    // {
+    //   name: "delete",
+    //   icon: "heroicons-outline:trash",
+    //   doit: (item) => dispatch(remove(item.id)),
+    // },
   ];
 
+
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => projects, [projects]);
+  const data = useMemo(() => feedback, [feedback]);
+
 
   const tableInstance = useTable(
     {
@@ -102,16 +186,21 @@ const FeedBackResult = ({ projects }) => {
     setGlobalFilter,
     prepareRow,
   } = tableInstance;
+
   const { globalFilter, pageIndex, pageSize } = state;
   return (
     <>
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Feedback Result</h4>
+          <h4 className="card-title">Feedback List</h4>
+          <div className="flex items-center space-x-2">
+            <div className="text-lg text-slate-500">Total Feedbacks</div>
+            <div className="text-lg text-green-500 font-bold">{feedback?.length}</div>
+          </div>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
-            <div className="mb-4 ">
+            <div>
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps}
@@ -246,4 +335,4 @@ const FeedBackResult = ({ projects }) => {
   );
 };
 
-export default FeedBackResult;
+export default FeedbackList;

@@ -1,82 +1,110 @@
 "use client";
-import React, { useState } from "react";
-import FormAddFeedBack from "@/components/partials/app/form/feedback-form";
 
+import AddFeedback from "@/components/partials/app/form/feedback-form-service/AddFeedback";
+import EditFeedback from "@/components/partials/app/form/feedback-form-service/EditFeedback";
+import FeedbackList from "@/components/partials/app/form/feedback-form-service/FeedbackList";
+import SubmitFeedback from "@/components/partials/app/form/feedback-form-service/SubmitFeedback";
+import {
+  toggleAddModal,
+  toggleSubmitModal,
+} from "@/components/partials/app/form/feedback-form-service/store";
+import { fetchData } from "@/components/partials/app/service";
+import GridLoading from "@/components/skeleton/Grid";
+import TableLoading from "@/components/skeleton/Table";
+import Button from "@/components/ui/Button";
+import useWidth from "@/hooks/useWidth";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
 
-const FeedBackResult = () => {
-  const [dataSource, setDataSource] = useState([
-    {
-      key: '1',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-      course: 'Data Structures',
-      numberofquestion: 20
-    },
-    {
-      key: '2',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-      course: 'Circuit Analysis',
-      numberofquestion: 20
+const Feedback = () => {
+  const { width, breakpoints } = useWidth();
+  const [isLoaded, setIsLoaded] = useState(false);
+  // const { deps } = useSelector((state) => state.department);
+  const { feed } = useSelector((state) => state.feedback);
+  const { users } = useSelector((state) => state.auth);
+  const [Feedback, setFeedback] = useState([]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    setIsLoaded(true);
+    fetchDepartments();
+  }, [feed]);
+  const fetchDepartments = async () => {
+    try {
+      await fetchData("/feedback-form/get-all?page=0&size=100", {}, "GET").then(
+        (res) => {
+          if (res) {
+            setFeedback(res?.content);
+            setIsLoaded(false);
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(error, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
 
-    },
-  ]);
-  const columns = [
-    {
-      title: 'Number',
-      dataIndex: 'number',
-      key: 'number',
-      width: 80,
-    },
-    {
-      title: 'Question',
-      dataIndex: 'question',
-      key: 'question',
-      width: 400,
-    },
-    {
-      title: 'Outstanding',
-      dataIndex: 'outstanding',
-      key: 'outstanding',
-      width: 50,
-      render: (_, record) => record.rating === 5 ? record.number : null,
-    },
-    {
-      title: 'Exceeds Expectations',
-      dataIndex: 'exceeds',
-      key: 'exceeds',
-      width: 50,
-      render: (_, record) => record.rating === 4 ? record.number : null,
-    },
-    {
-      title: 'Meets Expectations',
-      dataIndex: 'meets',
-      key: 'meets',
-      width: 50,
-      align: 'center',
-      render: (_, record) => record.rating === 3 ? record.number : null,
-    },
-    {
-      title: 'Needs Improvement',
-      dataIndex: 'needs',
-      key: 'needs',
-      width: 50,
-      align: 'center',
-      render: (_, record) => record.rating === 2 ? record.number : null,
-    },
-    {
-      title: 'Unacceptable',
-      dataIndex: 'unacceptable',
-      key: 'unacceptable',
-      width: 50,
-      align: 'center',
-      render: (_, record) => record.rating === 1 ? record.number : null,
-    },
-  ];
   return (
     <div>
+      <ToastContainer />
+      <div className="flex flex-wrap justify-between items-center mb-4">
+        <h4 className="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4">
+          Feedback
+        </h4>
 
-      <FormAddFeedBack projects={dataSource} />
+        <div
+          className={`${
+            width < breakpoints.md ? "space-x-rb" : ""
+          } md:flex md:space-x-4 md:justify-end items-center rtl:space-x-reverse`}
+        >
+   
+          {
+            (users?.role == "ADMIN" ? (
+              <Button
+                icon="heroicons-outline:plus"
+                text="Add Feedback"
+                className="btn-dark dark:bg-slate-800  h-min text-sm font-normal"
+                iconClass=" text-lg"
+                onClick={() => dispatch(toggleAddModal(true))}
+              />
+            ) : (
+              <div>{}</div>
+            ))
+          }
+
+          <Button
+            icon="heroicons-outline:plus"
+            text="Submit Feedback"
+            className="btn-dark dark:bg-slate-800  h-min text-sm font-normal"
+            iconClass=" text-lg"
+            onClick={() => dispatch(toggleSubmitModal(true))}
+          />
+        </div>
+      </div>
+
+      {isLoaded && <TableLoading count={feed?.length} />}
+
+      {!isLoaded && (
+        <div>
+          <FeedbackList feedback={Feedback} />
+        </div>
+      )}
+
+      <AddFeedback />
+      <SubmitFeedback />
+      <EditFeedback />
     </div>
   );
 };
 
-export default FeedBackResult;
+export default Feedback;

@@ -1,12 +1,14 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { usePathname } from 'next/navigation';
 import { useSelector, useDispatch } from "react-redux";
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { Menu } from "@headlessui/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams  } from "next/navigation";
 import { Button } from 'antd';
+import { useParams } from "react-router-dom";
 
 import {
   useTable,
@@ -18,8 +20,13 @@ import {
 
 const FeedBackTable = ({ projects }) => {
   const dispatch = useDispatch();
-  const router = useRouter();
+  const location = useParams();
 
+  const studentName = new URLSearchParams(location.search);
+  console.log(studentName);
+  const router = useRouter();
+  const pathname = usePathname()
+  console.log("location",pathname)
   const COLUMNS = [
     {
       Header: "No",
@@ -37,7 +44,7 @@ const FeedBackTable = ({ projects }) => {
     },
     {
       Header: "Question",
-      accessor: "question",
+      accessor: "question_text",
       Cell: (row) => {
         return (
           <div className="flex space-x-3 items-center text-left rtl:space-x-reverse">
@@ -97,7 +104,14 @@ const FeedBackTable = ({ projects }) => {
     },
 
   ];
+  const routeName = useRouter();
+  const searchParams = useSearchParams();
+  console.log("search param",searchParams.get("feedback"))
+  // useEffect(() => {
+  //   const id = router.query[0];
+  //   console.log('path', id);
 
+  // }, []);
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => projects, [projects]);
 
