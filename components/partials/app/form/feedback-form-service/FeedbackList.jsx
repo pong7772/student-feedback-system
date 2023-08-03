@@ -17,10 +17,11 @@ import {
   usePagination,
 } from "react-table";
 import { remove, toggleEditModal, update } from "./store";
-
+import Button from "@/components/ui/Button";
 const FeedbackList = ({ feedback }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { users } = useSelector((state) => state.auth);
 
 
   const updateFeedback = async (item) => {
@@ -28,13 +29,13 @@ const FeedbackList = ({ feedback }) => {
   };
 
   const COLUMNS = [
-    {
-      Header: "No.",
-      accessor: "id",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
+    // {
+    //   Header: "No.",
+    //   accessor: "id",
+    //   Cell: (row) => {
+    //     return <span>{row?.cell?.value}</span>;
+    //   },
+    // },
 
     {
       Header: "Title",
@@ -88,49 +89,62 @@ const FeedbackList = ({ feedback }) => {
       },
     },
 
-    {
-      Header: "action",
-      accessor: "action",
-      Cell: (row) => {
-        return (
-          <div>
-            <Dropdown
-              classMenuItems="right-0 w-[140px] top-[110%] "
-              label={
-                <span className="text-xl text-center block w-full">
-                  <Icon icon="heroicons-outline:dots-vertical" />
-                </span>
-              }
-            >
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 mb-2">
-                {actions.map((item, i) => (
-                  <Menu.Item
-                    key={i}
-                    onClick={() => item.doit(row?.row?.original)}
-                  >
-                    <div
-                      className={`
+    users?.role == 'ADMIN' ?
+      {
+
+        Header: "action",
+        accessor: "action",
+        Cell: (row) => {
+          return (
+            <div>
+              <Dropdown
+                classMenuItems="right-0 w-[140px] top-[110%] "
+                label={
+                  <span className="text-xl text-center block w-full">
+                    <Icon icon="heroicons-outline:dots-vertical" />
+                  </span>
+                }
+              >
+                <div className="divide-y divide-slate-100 dark:divide-slate-800 mb-2">
+                  {actions.map((item, i) => (
+                    <Menu.Item
+                      key={i}
+                      onClick={() => item.doit(row?.row?.original)}
+                    >
+                      <div
+                        className={`
                 
                   ${item.name === "delete"
-                          ? "bg-danger-500 text-danger-500 bg-opacity-30   hover:bg-opacity-100 hover:text-white"
-                          : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
-                        }
+                            ? "bg-danger-500 text-danger-500 bg-opacity-30   hover:bg-opacity-100 hover:text-white"
+                            : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
+                          }
                    w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
                    first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse `}
-                    >
-                      <span className="text-base">
-                        <Icon icon={item.icon} />
-                      </span>
-                      <span>{item.name}</span>
-                    </div>
-                  </Menu.Item>
-                ))}
-              </div>
-            </Dropdown>
-          </div>
-        );
-      },
-    },
+                      >
+                        <span className="text-base">
+                          <Icon icon={item.icon} />
+                        </span>
+                        <span>{item.name}</span>
+                      </div>
+                    </Menu.Item>
+                  ))}
+                </div>
+              </Dropdown>
+            </div>
+          );
+        },
+
+      } :
+      {
+        Header: "action",
+        accessor: "id",
+        Cell: (row) => {
+          return (
+            <Button onClick={() => router.push(`/feedback-form/submit/${row?.cell?.value}`)} className="bg-blue-500 text-white-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white " >Submit Feedback</Button>
+          );
+        },
+      }
+
   ];
   const actions = [
     {

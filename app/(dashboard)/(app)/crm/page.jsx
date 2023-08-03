@@ -85,7 +85,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-12 gap-5 mb-5">
         <div className="2xl:col-span-3 lg:col-span-4 col-span-12">
-          <ImageBlock2 />
+          <ImageBlock2 users={users} />
         </div>
         <div className="2xl:col-span-9 lg:col-span-8 col-span-12">
           <Card bodyClass="p-4">
@@ -132,7 +132,7 @@ const Dashboard = () => {
                   Total Department
                 </h4>
                 <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  {allDepartment?.length}
+                  {allDepartment?.length + 1}
                 </div>
               </div>
             </div>

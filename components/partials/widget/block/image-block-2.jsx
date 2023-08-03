@@ -1,5 +1,5 @@
 
-const ImageBlock2 = () => {
+const ImageBlock2 = ({ users }) => {
 
   return (
     <div
@@ -11,7 +11,7 @@ const ImageBlock2 = () => {
       <div>
         <h4 className="text-xl font-medium text-white mb-2">
           <span className="block font-normal">Good evening,</span>
-          <span className="block"></span>
+          <span className="block">{users?.firstname + users?.lastname}</span>
         </h4>
         <p className="text-sm text-white font-normal">Welcome to Feedback Sys</p>
       </div>
