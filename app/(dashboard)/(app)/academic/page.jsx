@@ -8,7 +8,7 @@ import AcademicList from "@/components/partials/app/academic-service-all/Academi
 import ListLoading from "@/components/skeleton/ListLoading";
 import TableLoading from "@/components/skeleton/Table";
 import AddAcademic from "@/components/partials/app/academic-service-all/AddAcademic";
-import EditAcademic from "@/components/partials/app/academic-service-all/EditAcademic";
+// import EditAcademic from "@/components/partials/app/academic-service-all/EditAcademic";
 import { ToastContainer, toast } from "react-toastify";
 import { batchToggleAddModal, courseToggleAddModal, semesterToggleAddModal } from "@/components/partials/app/academic-service-all/store";
 import { fetchData } from "@/components/partials/app/service";
