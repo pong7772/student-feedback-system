@@ -40,9 +40,13 @@ const EditFeedback = () => {
 
   const FormValidationSchema = yup
     .object({
-      // name: yup.string().required("Name is required"),
+      feedbackFormId: yup.string().required(),
+      title: yup.string().required(),
+      description: yup.string().required(),
+      questions: yup.string().required(),
+
     })
-    // .required();
+  // .required();
 
   const {
     register,
@@ -97,7 +101,19 @@ const EditFeedback = () => {
           }
         }
       );
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      toast.error("Edit Failed", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+      dispatch(toggleEditModal(false));
+    }
   };
 
   return (

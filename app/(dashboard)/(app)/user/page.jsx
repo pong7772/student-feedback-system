@@ -7,7 +7,7 @@ import UserGrid from "@/components/partials/app/user-service/UserGrid";
 import UserList from "@/components/partials/app/user-service/UserList";
 import GridLoading from "@/components/skeleton/Grid";
 import TableLoading from "@/components/skeleton/Table";
-import { toggleAddModal } from "@/components/partials/app/user-service/store";
+import { setAllUsers, toggleAddModal } from "@/components/partials/app/user-service/store";
 import AddUser from "@/components/partials/app/user-service/AddUser";
 import { ToastContainer } from "react-toastify";
 // import EditUser from "@/components/partials/app/user-service/EditUser";
@@ -43,6 +43,7 @@ const UserPostPage = () => {
         const count = res?.count
         setCount(count)
         setAllUser(data)
+        dispatch(setAllUsers(count))
         setIsLoaded(false);
       } else {
         console.log("error")

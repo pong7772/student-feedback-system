@@ -30,7 +30,7 @@ const RadarChart = () => {
             label: "Total",
             color: isDark ? "#E2E8F0" : "#475569",
             formatter: function () {
-              return 249;
+              return 24;
             },
           },
         },

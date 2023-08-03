@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
-
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 
 export const appCourseSlice = createSlice({
   name: "appCourse",
@@ -10,27 +9,7 @@ export const appCourseSlice = createSlice({
     isLoading: null,
     editItem: {},
     editModal: false,
-    courses: [
-      {
-        id: uuidv4(),
-        course: "Computer Science",
-        lecturer: "visothipong ",
-        rating:"5",
-        takeIn: "map ft Semester",
-        startDate: "2022-10-03",
-        updateDate: "2022-10-06",
-        
-      },
-      {
-        id: uuidv4(),
-        course: "Computer Science",
-        lecturer: "Leakhena ",
-        rating:"5",
-        takeIn: "map ft Semester",
-        startDate: "2022-10-03",
-        updateDate: "2022-10-06",
-      },
-    ],
+    courses: [],
   },
   reducers: {
     courseToggleAddModal: (state, action) => {
@@ -93,21 +72,7 @@ export const appBatchSlice = createSlice({
     isLoading: null,
     editItem: {},
     editModal: false,
-    batches: [
-      {
-        id: uuidv4(),
-        batchNumber : "8",
-        startDate: "2022-10-03",
-        endDate: "2022-10-06",
-        
-      },
-      {
-        id: uuidv4(),
-        batchNumber : "8",
-        startDate: "2022-10-03",
-        endDate: "2022-10-06",
-      },
-    ],
+    batches: [],
   },
   reducers: {
     batchToggleAddModal: (state, action) => {
@@ -174,15 +139,14 @@ export const appSemesterSlice = createSlice({
       {
         id: uuidv4(),
         semester: "1",
-        credits : 10,
+        credits: 10,
         startDate: "2022-10-03",
         endDate: "2022-10-06",
-        
       },
       {
         id: uuidv4(),
         semester: "2",
-        credits : 10,
+        credits: 10,
         startDate: "2022-10-03",
         endDate: "2022-10-06",
       },
@@ -266,5 +230,11 @@ export const {
   updateSemester,
 } = appSemesterSlice.actions;
 
-export default [{course: appCourseSlice.reducer,batch : appBatchSlice.reducer, semester : appSemesterSlice.reducer}];
+export default [
+  {
+    course: appCourseSlice.reducer,
+    batch: appBatchSlice.reducer,
+    semester: appSemesterSlice.reducer,
+  },
+];
 // export default appCourseSlice.reducer;

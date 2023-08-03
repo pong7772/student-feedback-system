@@ -245,7 +245,7 @@ const AddUser = () => {
             label="Email" />
           <Textinput
             name="password"
-            label="Change Passwrod"
+            label="Passwrod"
             type="password"
             // defaultValue={editItem.password}
             placeholder=" Enter your password"

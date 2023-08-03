@@ -1,5 +1,8 @@
 import React from "react";
 import dynamic from "next/dynamic";
+import { fetchData } from "../../app/service";
+import { useState, useEffect } from "react";
+
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const shapeLine1 = {
@@ -204,27 +207,28 @@ const shapeLine3 = {
   },
 };
 
-const statistics = [
-  {
-    name: shapeLine1,
-    title: "Totel User",
-    count: "564",
-    bg: "bg-[#E5F9FF] dark:bg-slate-900	",
-  },
-  {
-    name: shapeLine2,
-    title: "Total Feedback Responses",
-    count: "464",
-    bg: "bg-[#FFEDE5] dark:bg-slate-900	",
-  },
-  {
-    name: shapeLine3,
-    title: "Total Department",
-    count: "15",
-    bg: "bg-[#EAE5FF] dark:bg-slate-900	",
-  },
-];
-const GroupChart1 = () => {
+const GroupChart1 = ({ userCount, allDepartment }) => {
+
+  const statistics = [
+    {
+      name: shapeLine1,
+      title: "Totel User",
+      count: userCount,
+      bg: "bg-[#E5F9FF] dark:bg-slate-900	",
+    },
+    {
+      name: shapeLine2,
+      title: "Total Feedback Responses",
+      count: "10",
+      bg: "bg-[#FFEDE5] dark:bg-slate-900	",
+    },
+    {
+      name: shapeLine3,
+      title: "Total Department",
+      count: allDepartment?.length,
+      bg: "bg-[#EAE5FF] dark:bg-slate-900	",
+    },
+  ];
   return (
     <>
       {statistics.map((item, i) => (

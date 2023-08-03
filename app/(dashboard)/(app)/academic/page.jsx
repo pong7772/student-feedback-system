@@ -15,7 +15,7 @@ import { fetchData } from "@/components/partials/app/service";
 
 
 const AcademicPostPage = () => {
-    const [filler, setFiller] = useState("course");
+    const [filler, setFiller] = useState("batch");
     // use width is necessary for the repsonsive layout
     const { width, breakpoints } = useWidth();
     const [isLoaded, setIsLoaded] = useState(false);
@@ -163,17 +163,7 @@ const AcademicPostPage = () => {
                     className={`${width < breakpoints.md ? "space-x-rb" : ""
                         } items-center rtl:space-x-reverse md:flex md:justify-end md:space-x-4`}
                 >
-                    <Button
-                        icon="heroicons-outline:academic-cap"
-                        text="Course view"
-                        disabled={isLoaded}
-                        className={`${filler === "course"
-                            ? "bg-slate-900 text-white  dark:bg-slate-700"
-                            : " bg-white dark:bg-slate-800 dark:text-slate-300"
-                            }   h-min text-sm font-normal`}
-                        iconClass=" text-lg"
-                        onClick={() => setFiller("course")}
-                    />
+
                     <Button
                         icon="heroicons-outline:clipboard-check"
                         text="Batch view"
@@ -196,6 +186,17 @@ const AcademicPostPage = () => {
                         iconClass=" text-lg"
                         onClick={() => setFiller("semester")}
                     />
+                    <Button
+                        icon="heroicons-outline:academic-cap"
+                        text="Course view"
+                        disabled={isLoaded}
+                        className={`${filler === "course"
+                            ? "bg-slate-900 text-white  dark:bg-slate-700"
+                            : " bg-white dark:bg-slate-800 dark:text-slate-300"
+                            }   h-min text-sm font-normal`}
+                        iconClass=" text-lg"
+                        onClick={() => setFiller("course")}
+                    />
 
                     <Button
                         icon="heroicons-outline:plus"
@@ -216,19 +217,21 @@ const AcademicPostPage = () => {
                 <TableLoading count={courses?.length} items={courses} />
             )}
 
-            {filler === "course" && !isLoaded && (
-                <div>
-                    <AcademicList projects={allCourses} filler={filler} />
-                </div>
-            )}
+
             {filler === "batch" && !isLoaded && (
                 <div>
                     <AcademicList projects={allBatches} filler={filler} />
                 </div>
             )}
+
             {filler === "semester" && !isLoaded && (
                 <div>
                     <AcademicList projects={allSemesters} filler={filler} />
+                </div>
+            )}
+            {filler === "course" && !isLoaded && (
+                <div>
+                    <AcademicList projects={allCourses} filler={filler} />
                 </div>
             )}
             <AddAcademic filler={filler} lecturerOption={allLecturer} semesterOption={allSemesters} batchOption={allBatches} />

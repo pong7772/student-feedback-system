@@ -6,6 +6,7 @@ import Dropdown from "@/components/ui/Dropdown";
 import { Menu } from "@headlessui/react";
 import { removeUser, updateUser } from "./store";
 import { useRouter } from "next/navigation";
+import { removeBatch, removeCourse, removeSemester } from "./store";
 import Moment from "moment";
 import {
   useTable,
@@ -14,10 +15,55 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
-
+import Button from "@/components/ui/Button";
+import { fetchData } from "@/components/partials/app/service";
 const AcademicList = ({ projects, filler }) => {
   const dispatch = useDispatch();
-  const router = useRouter();
+  const removeBatches = async (item) => {
+    fetchData(
+      "/batch/delete?id=" + item,
+      {},
+      "GET"
+    ).then((res) => {
+      if (res) {
+        dispatch(removeBatch(item));
+      }
+    }).catch(error => {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT
+      })
+    })
+  };
+  const removeCourses = async (item) => {
+    fetchData(
+      "/course/delete?id=" + item,
+      {},
+      "GET"
+    ).then((res) => {
+      if (res) {
+        dispatch(removeCourse(item));
+      }
+    }).catch(error => {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT
+      })
+    })
+  }
+  const removeSemesters = async (item) => {
+    fetchData(
+      "/semester/delete?id=" + item,
+      {},
+      "GET"
+    ).then((res) => {
+      if (res) {
+        dispatch(removeSemester(item));
+      }
+    }).catch(error => {
+      toast.error(error, {
+        position: toast.POSITION.TOP_RIGHT
+      })
+    })
+  }
 
   const COLUMNS = (filler == "course") ? [
     {
@@ -67,7 +113,7 @@ const AcademicList = ({ projects, filler }) => {
                   </div>
                 </div>
 
-              )) : <div className="text-red-500">No Semester</div>
+              )) : <div className="text-red-500">No FeedbackForm</div>
               }
 
             </div>
@@ -78,44 +124,10 @@ const AcademicList = ({ projects, filler }) => {
 
     {
       Header: "action",
-      accessor: "action",
+      accessor: "id",
       Cell: (row) => {
         return (
-          <div>
-            <Dropdown
-              classMenuItems="right-0 w-[140px] top-[110%] "
-              label={
-                <span className="text-xl text-center block w-full">
-                  <Icon icon="heroicons-outline:dots-vertical" />
-                </span>
-              }
-            >
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 mb-2">
-                {actions.map((item, i) => (
-                  <Menu.Item
-                    key={i}
-                    onClick={() => item.doit(row?.row?.original)}
-                  >
-                    <div
-                      className={`
-                
-                  ${item.name === "delete"
-                          ? "bg-danger-500 text-danger-500 bg-opacity-30   hover:bg-opacity-100 hover:text-white"
-                          : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
-                        }
-                   w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-                   first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse `}
-                    >
-                      <span className="text-base">
-                        <Icon icon={item.icon} />
-                      </span>
-                      <span>{item.name}</span>
-                    </div>
-                  </Menu.Item>
-                ))}
-              </div>
-            </Dropdown>
-          </div>
+          <Button onClick={removeCourses(row?.cell?.value)} className="bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white " >Delete</Button>
         );
       },
     },
@@ -196,44 +208,10 @@ const AcademicList = ({ projects, filler }) => {
 
     {
       Header: "action",
-      accessor: "action",
+      accessor: "id",
       Cell: (row) => {
         return (
-          <div>
-            <Dropdown
-              classMenuItems="right-0 w-[140px] top-[110%] mb-6 "
-              label={
-                <span className="text-xl text-center block w-full">
-                  <Icon icon="heroicons-outline:dots-vertical" />
-                </span>
-              }
-            >
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 mb-4">
-                {actions.map((item, i) => (
-                  <Menu.Item
-                    key={i}
-                    onClick={() => item.doit(row?.row?.original)}
-                  >
-                    <div
-                      className={`
-                
-                  ${item.name === "delete"
-                          ? "bg-danger-500 text-danger-500 bg-opacity-30   hover:bg-opacity-100 hover:text-white"
-                          : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
-                        }
-                   w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-                   first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse `}
-                    >
-                      <span className="text-base">
-                        <Icon icon={item.icon} />
-                      </span>
-                      <span>{item.name}</span>
-                    </div>
-                  </Menu.Item>
-                ))}
-              </div>
-            </Dropdown>
-          </div>
+          <Button onClick={() => removeBatches(row?.cell?.value)} className="bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white " >Delete</Button>
         );
       },
     },
@@ -306,44 +284,10 @@ const AcademicList = ({ projects, filler }) => {
 
   {
     Header: "action",
-    accessor: "action",
+    accessor: "id",
     Cell: (row) => {
       return (
-        <div>
-          <Dropdown
-            classMenuItems="right-0 w-[140px] top-[110%] "
-            label={
-              <span className="text-xl text-center block w-full">
-                <Icon icon="heroicons-outline:dots-vertical" />
-              </span>
-            }
-          >
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
-              {actions.map((item, i) => (
-                <Menu.Item
-                  key={i}
-                  onClick={() => item.doit(row?.row?.original)}
-                >
-                  <div
-                    className={`
-                
-                  ${item.name === "delete"
-                        ? "bg-danger-500 text-danger-500 bg-opacity-30   hover:bg-opacity-100 hover:text-white"
-                        : "hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50"
-                      }
-                   w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-                   first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse `}
-                  >
-                    <span className="text-base">
-                      <Icon icon={item.icon} />
-                    </span>
-                    <span>{item.name}</span>
-                  </div>
-                </Menu.Item>
-              ))}
-            </div>
-          </Dropdown>
-        </div>
+        <Button onClick={() => removeSemesters(row?.cell?.value)} className="bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white " >Delete</Button>
       );
     },
   },]
@@ -359,7 +303,7 @@ const AcademicList = ({ projects, filler }) => {
     {
       name: "delete",
       icon: "heroicons-outline:trash",
-      doit: (item) => dispatch(removeUser(item.id)),
+      doit: (item) => removeItem(item),
     },
   ];
 

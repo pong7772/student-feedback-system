@@ -6,7 +6,8 @@ import Dropdown from "@/components/ui/Dropdown";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { Menu } from "@headlessui/react";
 import { useRouter } from "next/navigation";
-import { Button } from 'antd';
+import { toast } from "react-toastify";
+import Button from "@/components/ui/Button";
 import {
   useTable,
   useRowSelect,
@@ -16,7 +17,6 @@ import {
 } from "react-table";
 
 const FeedBackResult = ({ projects }) => {
-  const dispatch = useDispatch();
   const router = useRouter();
 
   const COLUMNS = [
@@ -49,27 +49,16 @@ const FeedBackResult = ({ projects }) => {
         return <div>{row?.cell?.value}</div>;
       },
     },
-    // router.push(`/response?lecture=${lecture}&course=${selectedValue}`);
     {
       Header: "action",
       accessor: "id",
       Cell: (row) => {
         return (
-          <Button onClick={() => router.push(`/result?${row?.cell?.value}`)} className="mx-2 border-[var(--base-blue)] text-[var(--base-blue)]">View FeedBack</Button>
+          <Button onClick={() => router.push(`/feedback/${row?.cell?.value}`)} className="bg-blue-500 text-white hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 ">View FeedBack</Button>
         );
       },
     },
   ];
-  const actions = [
-    {
-      name: "view",
-      icon: "heroicons-outline:eye",
-      doit: (item) => router.push('/feedback-result'),
-    },
-
-
-  ];
-
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => projects, [projects]);
 
@@ -105,13 +94,18 @@ const FeedBackResult = ({ projects }) => {
   const { globalFilter, pageIndex, pageSize } = state;
   return (
     <>
+
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Feedback Result</h4>
+          <h4 className="card-title">Responses List </h4>
+          <div className="flex items-center space-x-2">
+            <div className="text-lg text-slate-500">Total Responses</div>
+            <div className="text-lg text-green-500 font-bold">{projects?.length}</div>
+          </div>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
-            <div className="mb-4 ">
+            <div className="  mb-20" >
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps}
@@ -148,28 +142,39 @@ const FeedBackResult = ({ projects }) => {
                   className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                   {...getTableBodyProps}
                 >
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <tr
-                        key={`ex-tr2-${row.id}`}
-                        {...row.getRowProps()}
-                        className=" even:bg-slate-100 dark:even:bg-slate-700"
-                      >
-                        {row.cells.map((cell) => {
-                          return (
-                            <td
-                              {...cell.getCellProps()}
-                              className="table-td"
-                              key={`ex-td-${cell.column.id}`}
-                            >
-                              {cell.render("Cell")}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
+                  {projects.length === 0 ?
+                    <tr className="text-center mt-2"><td colSpan={6}>
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="text-xl font-medium text-slate-600 dark:text-slate-400">
+                          🙅🏻‍♂️ NO WARRANT
+                        </div>
+                      </div>
+
+                    </td></tr> :
+                    page.map((row) => {
+                      prepareRow(row);
+                      return (
+                        <tr
+                          key={`ex-tr2-${row.id}`}
+                          {...row.getRowProps()}
+                          className=" even:bg-slate-100 dark:even:bg-slate-700"
+                        >
+                          {row.cells.map((cell) => {
+                            return (
+                              <td
+                                {...cell.getCellProps()}
+                                className="table-td"
+                                key={`ex-td-${cell.column.id}`}
+                              >
+                                {cell.render("Cell")}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })
+
+                  }
                 </tbody>
               </table>
             </div>

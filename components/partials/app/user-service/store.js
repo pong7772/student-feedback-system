@@ -10,6 +10,7 @@ export const appUserSlice = createSlice({
     editItem: {},
     editModal: false,
     users: [],
+    allUser: 0,
     page: 0,
   },
   reducers: {
@@ -64,6 +65,9 @@ export const appUserSlice = createSlice({
         ...action.payload,
       });
     },
+    setAllUsers: (state, action) => {
+      state.allUser = action.payload;
+    },
   },
 });
 
@@ -75,5 +79,6 @@ export const {
   toggleEditModal,
   updateUser,
   setUser,
+  setAllUsers,
 } = appUserSlice.actions;
 export default appUserSlice.reducer;

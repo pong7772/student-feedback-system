@@ -11,6 +11,13 @@ import CompanyTable from "@/components/partials/table/company-table";
 import RecentActivity from "@/components/partials/widget/recent-activity";
 import RadarChart from "@/components/partials/widget/chart/radar-chart";
 import HomeBredCurbs from "@/components/partials/HomeBredCurbs";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { fetchData } from "@/components/partials/app/service";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setDep, toggleAddModalDep } from '@/components/partials/app/department-service/store';
 
 const MostSales = dynamic(
   () => import("@/components/partials/widget/most-sales"),
@@ -19,10 +26,63 @@ const MostSales = dynamic(
   }
 );
 const Dashboard = () => {
-  const [filterMap, setFilterMap] = useState("usa");
+  const { users } = useSelector((state) => state.auth);
+  const [page, setPage] = useState(0)
+  const [allUser, setAllUser] = useState(users)
+  const [count, setCount] = useState(0)
+  const [allDepartment, setAllDepartment] = useState([])
+
+  // console.log(users)
+  useEffect(() => {
+    // this is the loading animation need to implemnent with backend  
+    fetchAllUsers()
+    fetchDepartments()
+  }, [users]);
+
+  // fetch all user from backend 
+
+  const fetchAllUsers = async () => {
+    await fetchData(
+      `/user/get-all-user?page=${page}&size=1000&role=ALL`, {},
+      "GET"
+    ).then((res) => {
+      if (res) {
+        const data = res?.content
+        const count = res?.count
+        setCount(count)
+        setAllUser(data)
+      } else {
+        console.log("error")
+      }
+    }).catch((err) => {
+      console.log(err)
+    });
+  }
+  const fetchDepartments = async () => {
+    try {
+      await fetchData("/department/get-all?page=0&size=1000", {}, "GET").then((res) => {
+        if (res) {
+          dispatch(setDep(res?.content))
+          setAllDepartment(res?.content);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error(error, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
   return (
     <div>
-      <HomeBredCurbs title="Dashboard" />
+
       <div className="grid grid-cols-12 gap-5 mb-5">
         <div className="2xl:col-span-3 lg:col-span-4 col-span-12">
           <ImageBlock2 />
@@ -30,7 +90,7 @@ const Dashboard = () => {
         <div className="2xl:col-span-9 lg:col-span-8 col-span-12">
           <Card bodyClass="p-4">
             <div className="grid md:grid-cols-3 col-span-1 gap-4">
-              <GroupChart1 />
+              <GroupChart1 userCount={count} allDepartment={allDepartment} />
             </div>
           </Card>
         </div>
@@ -54,7 +114,7 @@ const Dashboard = () => {
                   Total User
                 </h4>
                 <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  546
+                  {count}
                 </div>
               </div>
 
@@ -63,7 +123,7 @@ const Dashboard = () => {
                   Total Feedback
                 </h4>
                 <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  723
+                  7
                 </div>
               </div>
 
@@ -72,7 +132,7 @@ const Dashboard = () => {
                   Total Department
                 </h4>
                 <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  18
+                  {allDepartment?.length}
                 </div>
               </div>
             </div>
