@@ -20,7 +20,7 @@ const UserList = ({ users, count }) => {
   const router = useRouter();
   // console.log(users)
   const handleRemoveUser = async (accountId) => {
-    const res = await fetchData("/user/delete-user?id=" + accountId, {}, "DELETE").then((res) => {
+    const res = await fetchData("/user/delete-user?id=" + accountId, {}, "GET").then((res) => {
       if (res) {
         dispatch(removeUser(accountId));
       }
