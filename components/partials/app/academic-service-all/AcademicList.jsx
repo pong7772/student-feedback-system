@@ -20,7 +20,7 @@ import { fetchData } from "@/components/partials/app/service";
 const AcademicList = ({ projects, filler }) => {
   const dispatch = useDispatch();
   const removeBatches = async (item) => {
-    fetchData(
+    await fetchData(
       "/batch/delete?id=" + item,
       {},
       "GET"
@@ -34,8 +34,8 @@ const AcademicList = ({ projects, filler }) => {
       })
     })
   };
-  const removeCourses = async (item) => {
-    fetchData(
+  const removeCoursess = async (item) => {
+    await fetchData(
       "/course/delete?id=" + item,
       {},
       "GET"
@@ -50,7 +50,7 @@ const AcademicList = ({ projects, filler }) => {
     })
   }
   const removeSemesters = async (item) => {
-    fetchData(
+    await fetchData(
       "/semester/delete?id=" + item,
       {},
       "GET"
@@ -127,7 +127,7 @@ const AcademicList = ({ projects, filler }) => {
       accessor: "id",
       Cell: (row) => {
         return (
-          <Button onClick={removeCourses(row?.cell?.value)} className="bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white " >Delete</Button>
+          <Button onClick={() => removeCoursess(row?.cell?.value)} className="bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white " >Delete</Button>
         );
       },
     },
