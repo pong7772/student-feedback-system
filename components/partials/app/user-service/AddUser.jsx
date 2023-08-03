@@ -138,21 +138,12 @@ const AddUser = () => {
 
     const { data: newUser } = await axios.post(`${backendUrl}/auth/register`, params
     );
+
     if (newUser) {
       dispatch(pushUser(newUser));
       dispatch(toggleAddModal(false));
-      toast.info("Edit Successfully", {
-        position: "top-right",
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
     } else {
-      toast.error("Edit Failed", {
+      toast.error("Add Failed", {
         position: "top-right",
         autoClose: 1500,
         hideProgressBar: false,

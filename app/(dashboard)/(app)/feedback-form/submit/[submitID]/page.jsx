@@ -150,19 +150,27 @@ const CreateFeedbackForm = () => {
                 onChange={(e) => handleRatingChange(index, e.target.value)}
               /> */}
               <div className="w-1/4">
-              <Textinput
-                type="number"
-                min="1"
-                max="5"
-                value={data.rating}
-                onChange={(e) => handleRatingChange(index, e.target.value)}
-                // label="Department"
-                placeholder="Enter Rating"
+                <input
+                  className="w-full 
+                  px-3 py-2
+                  border border-gray-300
+                  focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-transparent
+                  rounded-md
+                  sm:text-sm
+                  bg-gradient
+                   "
+                  type="number"
+                  min="1"
+                  max="5"
+                  value={data.rating}
+                  onChange={(e) => handleRatingChange(index, e.target.value)}
+                  // label="Department"
+                  placeholder="Enter Rating"
                 // register={register}
                 // error={errors.title}
-              />
+                />
               </div>
-            
+
             </div>
           ))}
 
