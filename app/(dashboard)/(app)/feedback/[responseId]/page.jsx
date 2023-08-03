@@ -75,7 +75,7 @@ const FeedbackResponseDetail = ({ params }) => {
                                     ease-in-out
                                     mb-2
                                     "
-                                title={item.question_number + " - " + item?.question_text}
+                                title={item?.question_text}
                             >
                                 {/* display item.rating in star view tailwind */}
                                 <div className="flex items-center space-x-2">

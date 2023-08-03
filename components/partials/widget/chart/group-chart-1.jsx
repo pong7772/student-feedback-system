@@ -225,7 +225,7 @@ const GroupChart1 = ({ userCount, allDepartment }) => {
     {
       name: shapeLine3,
       title: "Total Department",
-      count: allDepartment?.length,
+      count: allDepartment?.length + 1,
       bg: "bg-[#EAE5FF] dark:bg-slate-900	",
     },
   ];
