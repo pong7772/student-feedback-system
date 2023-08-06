@@ -34,11 +34,10 @@ const Step = () => {
             key={i}
           >
             <div
-              className={`   ${
-                stepNumber >= i
+              className={`   ${stepNumber >= i
                   ? "bg-blue-500 text-white ring-primary-500 ring-offset-2"
                   : "bg-white ring-primary-500 ring-opacity-70  text-primary-500 text-opacity-70"
-              }  icon-box h-12 w-12 rounded-full flex flex-col items-center justify-center relative z-[66] ring-1 text-lg font-medium`}
+                }  icon-box h-12 w-12 rounded-full flex flex-col items-center justify-center relative z-[66] ring-1 text-lg font-medium`}
             >
               {stepNumber <= i ? (
                 <span> {i + 1}</span>
@@ -50,9 +49,8 @@ const Step = () => {
             </div>
 
             <div
-              className={`${
-                stepNumber >= i ? "bg-primary-500" : "bg-[#E0EAFF]"
-              } absolute top-1/2 h-[2px] w-full`}
+              className={`${stepNumber >= i ? "bg-primary-500" : "bg-[#E0EAFF]"
+                } absolute top-1/2 h-[2px] w-full`}
             ></div>
 
             <div className="text-sm mt-[10px] leading-[16px] font-medium capitalize text-slate-500-500 text-center"></div>

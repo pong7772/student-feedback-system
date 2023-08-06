@@ -17,7 +17,6 @@ const FeedbackPostPage = () => {
         try {
             await fetchData("/feedback-form/get-response", {}, "GET").then((res) => {
                 if (res) {
-                    console.log(res)
                     setDataSource(res);
                     setLoading(false);
                 }
@@ -40,8 +39,9 @@ const FeedbackPostPage = () => {
     return (
         <div>
             <ToastContainer />
-            {!loading && <FeedbackResult projects={dataSource} />}
-            {loading && <TableLoading count={6} />}
+            {/* {!loading && <FeedbackResult projects={dataSource} />} */}
+            {/* {loading && <TableLoading count={6} />} */}
+            <FeedbackResult projects={dataSource} />
         </div>
     );
 };

@@ -28,7 +28,7 @@ const MostSales = dynamic(
 const Dashboard = () => {
   const { users } = useSelector((state) => state.auth);
   const [page, setPage] = useState(0)
-  const [allUser, setAllUser] = useState(users)
+  const [allUser, setAllUser] = useState([])
   const [count, setCount] = useState(0)
   const [allDepartment, setAllDepartment] = useState([])
 
@@ -62,7 +62,8 @@ const Dashboard = () => {
     try {
       await fetchData("/department/get-all?page=0&size=1000", {}, "GET").then((res) => {
         if (res) {
-          dispatch(setDep(res?.content))
+          console.log(res)
+          // dispatch(setDep(res?.content))
           setAllDepartment(res?.content);
         }
       });

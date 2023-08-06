@@ -16,6 +16,8 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import { toast } from "react-toastify";
+import { fetchData } from "@/components/partials/app/service";
 import { remove, toggleEditModal, update } from "./store";
 import Button from "@/components/ui/Button";
 const FeedbackList = ({ feedback }) => {
@@ -27,6 +29,32 @@ const FeedbackList = ({ feedback }) => {
   const updateFeedback = async (item) => {
     dispatch(update(item));
   };
+  const handleDelete = async (item) => {
+    console.log(item)
+    await fetchData(
+      `/feedback-form/delete?id=${item.id}`,
+      {},
+      "GET"
+    ).then((res) => {
+      if (res) {
+        dispatch(remove(item.id));
+      }
+    }).catch((err) => {
+      toast.error(err, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      }
+      );
+    }
+    );
+  };
+
 
   const COLUMNS = [
     // {
@@ -162,6 +190,11 @@ const FeedbackList = ({ feedback }) => {
       icon: "heroicons-outline:check",
       doit: (item) => router.push(`/feedback-form/submit/${item.id}`),
     },
+    {
+      name: "delete",
+      icon: "heroicons-outline:trash",
+      doit: (item) => handleDelete(item),
+    },
   ];
 
 
@@ -202,17 +235,18 @@ const FeedbackList = ({ feedback }) => {
   const { globalFilter, pageIndex, pageSize } = state;
   return (
     <>
+
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Feedback List</h4>
+          <h4 className="card-title">Feedback List </h4>
           <div className="flex items-center space-x-2">
-            <div className="text-lg text-slate-500">Total Feedbacks</div>
-            <div className="text-lg text-green-500 font-bold">{feedback?.length}</div>
+            <div className="text-lg text-slate-500">Total Feedback</div>
+            <div className="text-lg text-green-500 font-bold">{feedback.length}</div>
           </div>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
-            <div>
+            <div className="  mb-20" >
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps}
@@ -249,28 +283,39 @@ const FeedbackList = ({ feedback }) => {
                   className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                   {...getTableBodyProps}
                 >
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <tr
-                        key={`ex-tr2-${row.id}`}
-                        {...row.getRowProps()}
-                        className=" even:bg-slate-100 dark:even:bg-slate-700"
-                      >
-                        {row.cells.map((cell) => {
-                          return (
-                            <td
-                              {...cell.getCellProps()}
-                              className="table-td"
-                              key={`ex-td-${cell.column.id}`}
-                            >
-                              {cell.render("Cell")}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
+                  {feedback.length === 0 ?
+                    <tr className="text-center mt-2"><td colSpan={6}>
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="text-xl font-medium text-slate-600 dark:text-slate-400">
+                          🙅🏻‍♂️ No Feedback Found
+                        </div>
+                      </div>
+
+                    </td></tr> :
+                    page.map((row) => {
+                      prepareRow(row);
+                      return (
+                        <tr
+                          key={`ex-tr2-${row.id}`}
+                          {...row.getRowProps()}
+                          className=" even:bg-slate-100 dark:even:bg-slate-700"
+                        >
+                          {row.cells.map((cell) => {
+                            return (
+                              <td
+                                {...cell.getCellProps()}
+                                className="table-td"
+                                key={`ex-td-${cell.column.id}`}
+                              >
+                                {cell.render("Cell")}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })
+
+                  }
                 </tbody>
               </table>
             </div>

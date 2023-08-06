@@ -5,6 +5,8 @@ import EditFeedback from "@/components/partials/app/form/feedback-form-service/E
 import FeedbackList from "@/components/partials/app/form/feedback-form-service/FeedbackList";
 // import SubmitFeedback from "@/components/partials/app/form/feedback-form-service/SubmitFeedback";
 import {
+  push,
+  setForm,
   toggleAddModal,
   toggleSubmitModal,
 } from "@/components/partials/app/form/feedback-form-service/store";
@@ -16,32 +18,31 @@ import useWidth from "@/hooks/useWidth";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
-
 const Feedback = () => {
   const { width, breakpoints } = useWidth();
   const [isLoaded, setIsLoaded] = useState(false);
-  // const { deps } = useSelector((state) => state.department);
-  const { feed } = useSelector((state) => state.feedback);
+  const { feedback } = useSelector((state) => state.feedback);
   const { users } = useSelector((state) => state.auth);
-  const [Feedback, setFeedback] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [courseData, setCourseData] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
     setIsLoaded(true);
     fetchDepartments();
-  }, [feed]);
+    fetchAllCourse();
+  }, [feedback]);
   const fetchDepartments = async () => {
-    try {
-      await fetchData("/feedback-form/get-all?page=0&size=100", {}, "GET").then(
-        (res) => {
-          if (res) {
-            setFeedback(res?.content);
-            setIsLoaded(false);
-          }
+    await fetchData("/feedback-form/get-all?page=0&size=100", {}, "GET").then(
+      (res) => {
+        if (res) {
+          setFeedbacks(res?.content);
+          // dispatch(setForm(res?.content));
+          setIsLoaded(false);
         }
-      );
-    } catch (error) {
-      console.log(error);
-      toast.error(error, {
+      }
+    ).catch((err) => {
+      console.log(err)
+      toast.error("fail to get data", {
         position: "top-right",
         autoClose: 1500,
         hideProgressBar: false,
@@ -51,8 +52,39 @@ const Feedback = () => {
         progress: undefined,
         theme: "light",
       });
-    }
+    });
+
   };
+
+
+  const fetchAllCourse = async () => {
+    try {
+      await fetchData(
+        "/course/get-all?page=0&size=1000", {}, "GET"
+      ).then(course => {
+        if (course) {
+          setIsLoaded(false)
+          setCourseData(course?.content)
+        }
+      }
+      )
+
+    } catch (error) {
+      setIsLoaded(false)
+      toast.error(
+        error,
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      )
+    }
+  }
 
   return (
     <div>
@@ -63,22 +95,21 @@ const Feedback = () => {
         </h4>
 
         <div
-          className={`${
-            width < breakpoints.md ? "space-x-rb" : ""
-          } md:flex md:space-x-4 md:justify-end items-center rtl:space-x-reverse`}
+          className={`${width < breakpoints.md ? "space-x-rb" : ""
+            } md:flex md:space-x-4 md:justify-end items-center rtl:space-x-reverse`}
         >
-   
+
           {
             (users?.role == "ADMIN" ? (
               <Button
                 icon="heroicons-outline:plus"
-                text="Add Feedback"
+                text="Create New Feedback"
                 className="btn-dark dark:bg-slate-800  h-min text-sm font-normal"
                 iconClass=" text-lg"
                 onClick={() => dispatch(toggleAddModal(true))}
               />
             ) : (
-              <div>{}</div>
+              <div>{ }</div>
             ))
           }
 
@@ -92,15 +123,15 @@ const Feedback = () => {
         </div>
       </div>
 
-      {isLoaded && <TableLoading count={feed?.length} />}
+      {isLoaded && <TableLoading count={feedback?.length} />}
 
       {!isLoaded && (
         <div>
-          <FeedbackList feedback={Feedback} />
+          <FeedbackList feedback={feedbacks} />
         </div>
       )}
 
-      <AddFeedback />
+      <AddFeedback courseOptions={courseData} />
       {/* <SubmitFeedback /> */}
       <EditFeedback />
     </div>

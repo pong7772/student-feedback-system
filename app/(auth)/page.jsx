@@ -65,15 +65,17 @@ const Login = () => {
                   </div>
                 </div>
                 <LoginForm />
-                {/* <div className="md:max-w-[345px] mx-auto font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm">
-                  Don’t have an account?{" "}
-                  <Link
+                <div className="md:max-w-[345px] mx-auto font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm">
+                  <span>
+                    <div className="text-orange-500 text-base">Note:</div>
+                    <div className="text-slate-500 text-base">Our Platform doesn't allow user to Register by themselves. Please contact your Admin to get your account registered.</div>
+                  </span>{/* <Link
                     href="/register"
                     className="text-slate-900 dark:text-white font-medium hover:underline"
                   >
                     Sign up
-                  </Link>
-                </div> */}
+                  </Link> */}
+                </div>
               </div>
               <div className="auth-footer text-center">
                 COPYRIGHT &copy; 2023 Student Feedback System, All rights Reserved

@@ -208,7 +208,6 @@ const shapeLine3 = {
 };
 
 const GroupChart1 = ({ userCount, allDepartment }) => {
-
   const statistics = [
     {
       name: shapeLine1,

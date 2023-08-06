@@ -26,7 +26,7 @@ import { redirect } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function RootLayout({ children }) {
   const { width, breakpoints } = useWidth();
@@ -35,6 +35,7 @@ export default function RootLayout({ children }) {
   const [isDark] = useDarkMode();
   const [skin] = useSkin();
   const [navbarType] = useNavbarType();
+  const pathname = usePathname();
 
   const dispatch = useDispatch();
 
@@ -47,6 +48,32 @@ export default function RootLayout({ children }) {
       redirect("/");
     }
     setLoading(false);
+    if (pathname === "/academic" || pathname === "/user") {
+      if (users.role !== "ADMIN") {
+        toast.error("You are not allowed to access the page that you just go", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        redirect("/role");
+      }
+    }
+    if (pathname === "/feedback") {
+      if (users.role === "STUDENT") {
+        toast.error("You are not allowed to access the page that you just go", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        redirect("/role");
+      }
+    }
     dispatch(reloadData());
   }, [isAuth, users]);
   const location = usePathname();

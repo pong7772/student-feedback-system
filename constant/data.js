@@ -34,13 +34,13 @@ export const menuItems = [
     roles: ["ADMIN"],
   },
 
-  {
-    title: "Department",
-    isHide: true,
-    icon: "heroicons-outline:academic-cap",
-    link: "department",
-    roles: ["ADMIN"],
-  },
+  // {
+  //   title: "Department",
+  //   isHide: true,
+  //   icon: "heroicons-outline:academic-cap",
+  //   link: "department",
+  //   roles: ["ADMIN"],
+  // },
   {
     title: "User",
     isHide: true,
@@ -93,13 +93,13 @@ export const topMenu = [
     roles: ["ADMIN"],
   },
 
-  {
-    title: "Department",
-    isHide: true,
-    icon: "heroicons-outline:academic-cap",
-    link: "department",
-    roles: ["ADMIN"],
-  },
+  // {
+  //   title: "Department",
+  //   isHide: true,
+  //   icon: "heroicons-outline:academic-cap",
+  //   link: "department",
+  //   roles: ["ADMIN"],
+  // },
   {
     title: "User",
     isHide: true,

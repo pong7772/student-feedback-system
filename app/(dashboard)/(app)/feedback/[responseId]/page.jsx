@@ -11,7 +11,12 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
+import React from "react";
 import Card from "@/components/ui/Card";
+import Icon from "@/components/ui/Icon";
+import TotalTable from "@/components/partials/table/TotalTable";
+import userDarkMode from "@/hooks/useDarkMode";
+
 const FeedbackResponseDetail = ({ params }) => {
     const { width, breakpoints } = useWidth();
     const [isLoaded, setIsLoaded] = useState(false);
@@ -19,6 +24,10 @@ const FeedbackResponseDetail = ({ params }) => {
     const { feed } = useSelector((state) => state.feedback);
     const [feedback, setFeedback] = useState([]);
     const id = params?.responseId;
+    const printPage = () => {
+        window?.print();
+    };
+    const [isDark] = userDarkMode();
     useEffect(() => {
         setIsLoaded(true);
         fetchFeedback();
@@ -52,58 +61,41 @@ const FeedbackResponseDetail = ({ params }) => {
             <ToastContainer />
             {
                 isLoaded ? <Loading /> :
-                    feedback?.map((item, index) => {
-                        var arrayRating = []
-                        for (let i = 0; i < item.rating; i++) {
-                            arrayRating.push(i)
-                        }
-                        return (
-                            <Card
-                                className="
-                                    dark:bg-slate-800
-                                    text-slate-900
-                                    dark:text-slate-100
-                                    bg-white
-                                    shadow-sm
-                                    dark:shadow
-                                    rounded-md
-                                    overflow-hidden
-                                    hover:shadow-lg
-                                    dark:hover:shadow-xl
-                                    transition
-                                    duration-200
-                                    ease-in-out
-                                    mb-2
-                                    "
-                                title={item?.question_text}
-                            >
-                                {/* display item.rating in star view tailwind */}
-                                <div className="flex items-center space-x-2">
-                                    {/* title */}
-                                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
-                                        Rating:
+                    <div>
+                        <div className="lg:flex justify-between flex-wrap items-center mb-6">
+                            <h4>Preview Form Response</h4>
+                            <div className="flex lg:justify-end items-center flex-wrap space-xy-5">
+                                <button
+                                    type="button"
+                                    onClick={printPage}
+                                    className="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800 dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse"
+                                >
+                                    <span className="text-lg">
+                                        <Icon icon="heroicons:printer" />
                                     </span>
-                                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
-                                        {item?.rating}
+                                    <span>Print</span>
+                                </button>
+                            </div>
+                        </div>
+                        <Card bodyClass="p-0">
+                            <div className="flex justify-between flex-wrap space-y-4 px-6 pt-6 bg-slate-50 dark:bg-slate-800 pb-6 rounded-t-md">
+                                <div>
+                                    <span className="block text-slate-900 dark:text-slate-300 font-medium leading-5 text-xl">
+                                        Student Feedback System
                                     </span>
-                                    {
-                                        arrayRating?.map((items, index) => {
-                                            return (
-                                                <svg key={index} class="w-8 h-8 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                                                </svg>
-                                            )
-                                        }
-                                        )
-                                    }
-
                                 </div>
+                            </div>
+                            {feedback.length > 0 ? <div className="max-w-[980px] mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
+                                <TotalTable allFeedback={feedback} />
+                            </div> : <div className="py-10 text-center md:text-2xl text-xl font-normal text-slate-600 dark:text-slate-300">
+                                NO Data
+                            </div>}
+                            <div className="py-10 text-center md:text-2xl text-xl font-normal text-slate-600 dark:text-slate-300">
+                                Thank you for your using our system!
+                            </div>
+                        </Card>
+                    </div>
 
-
-                            </Card>
-
-                        )
-                    })
             }
         </div>
     );

@@ -48,6 +48,7 @@ const FeedbackDetail = () => {
     }
   };
 
+
   return (
     <div className="feedback-detail bg-white h-screen rounded-lg px-8 py-3">
       <ToastContainer />
@@ -60,9 +61,9 @@ const FeedbackDetail = () => {
       {Feedback ? (
         <>
           <h1 className="text-gray-800 mt-2 text-lg font-medium">
-              <span className="w-36 inline-block text-gray-600">Title</span>
-              {Feedback.title}
-            </h1>
+            <span className="w-36 inline-block text-gray-600">Title</span>
+            {Feedback.title}
+          </h1>
           <div>
             <p className="text-gray-800 mt-2">
               <span className="w-36 inline-block text-gray-600">Feedback ID</span>
@@ -79,14 +80,14 @@ const FeedbackDetail = () => {
             <p className="text-gray-800 mt-2">
               <span className="w-36 inline-block text-gray-600"> Created At</span>
               {
-              moment(Feedback.createdAt).format("DD-MM-YYYY")}
+                moment(Feedback.createdAt).format("DD-MM-YYYY")}
             </p>
             <p className="text-gray-800 mt-2">
               <span className="w-36 inline-block text-gray-600"> Updated At</span>
               {
-              moment(Feedback.updatedAt).format("DD-MM-YYYY")}
+                moment(Feedback.updatedAt).format("DD-MM-YYYY")}
             </p>
-          
+
           </div>
 
           <div className="mt-4">
@@ -96,10 +97,10 @@ const FeedbackDetail = () => {
             {Feedback.questions?.map((question, index) => (
               <div key={index} className="mb-4">
                 <p className="text-gray-800 mt-2">
-                  <span className="w-36 inline-block text-gray-600"> Question {index+1}</span>{" "}
+                  <span className="w-36 inline-block text-gray-600"> Question {index + 1}</span>{" "}
                   {question}
                 </p>
-               
+
               </div>
             ))}
           </div>

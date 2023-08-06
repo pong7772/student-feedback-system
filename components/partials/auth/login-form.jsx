@@ -38,6 +38,7 @@ const LoginForm = () => {
     router.prefetch('/feedback-form')
     router.prefetch('/feedback/create-feedback')
     router.prefetch('/result')
+    router.prefetch("/role");
   }, [])
   const {
     register,
