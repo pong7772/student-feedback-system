@@ -7,6 +7,7 @@ export const appCourseSlice = createSlice({
   initialState: {
     openProjectModal: false,
     isLoading: null,
+    assignCourseModal: false,
     editItem: {},
     editModal: false,
     courses: [],
@@ -17,6 +18,9 @@ export const appCourseSlice = createSlice({
     },
     courseToggleEditModal: (state, action) => {
       state.editModal = action.payload;
+    },
+    assignCourseToggleModal: (state, action) => {
+      state.assignCourseModal = action.payload;
     },
     pushCourse: (state, action) => {
       state.courses.unshift(action.payload);
@@ -46,6 +50,21 @@ export const appCourseSlice = createSlice({
         progress: undefined,
         theme: "light",
       });
+    },
+    assignCourseToStudent: (state, action) => {
+      // update project and  store it into editItem when click edit button
+
+      state.editItem = action.payload;
+      // toggle edit modal
+      state.assignCourseModal = !state.assignCourseModal;
+      // find index
+      // let index = state.courses.findIndex(
+      //   (item) => item.id === action.payload.id
+      // );
+      // // update project
+      // state.courses.splice(index, 1, {
+      //   ...action.payload,
+      // });
     },
     updateCourse: (state, action) => {
       // update project and  store it into editItem when click edit button
@@ -208,10 +227,12 @@ export const appSemesterSlice = createSlice({
 export const {
   openModalCourse,
   pushCourse,
+  assignCourseToggleModal,
   courseToggleAddModal,
   removeCourse,
   courseToggleEditModal,
   updateCourse,
+  assignCourseToStudent,
 } = appCourseSlice.actions;
 export const {
   openModal,

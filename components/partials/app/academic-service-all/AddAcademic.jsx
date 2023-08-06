@@ -3,11 +3,11 @@ import React, { useState } from "react";
 import Select, { components } from "react-select";
 import Modal from "@/components/ui/Modal";
 import { useSelector, useDispatch } from "react-redux";
-import { courseToggleAddModal, semesterToggleAddModal, batchToggleAddModal } from "./store";
+import { courseToggleAddModal, semesterToggleAddModal, batchToggleAddModal, assignCourseToggleModal } from "./store";
 import CourseForm from "./CourseForm";
 import BatchForm from "./BatchForm";
 import SemesterForm from "./SemesterForm";
-
+import AssignCourseToStudent from "./AssignCourseToStudent";
 
 const assigneeOptions = [
   {
@@ -64,11 +64,22 @@ const OptionComponent = ({ data, ...props }) => {
   );
 };
 
-const AddAcademic = ({ filler, lecturerOption, semesterOption, batchOption }) => {
+const AddAcademic = ({ filler, lecturerOption, semesterOption, batchOption, assignCourseOption, allStudent }) => {
   const { openProjectModal } = useSelector(filler == "course" ? (state) => state.course : filler == 'batch' ? (state) => state.batch : (state) => state.semester);
   const dispatch = useDispatch();
   const { storeDepartment } = useSelector((state) => state.department)
+  const { assignCourseModal } = useSelector((state) => state.course)
   const optionDepartment = storeDepartment.map((item) => {
+    // console.log(item)
+    return {
+      value: item.id,
+      label: item.name + "[" + item.batches.map((item) => {
+        return ` batch : ${item.batchNumber}`
+      }) + "]"
+    };
+  });
+  const assignCourseOptions = assignCourseOption?.map((item) => {
+    // console.log(item)
     return {
       value: item.id,
       label: item.name,
@@ -82,17 +93,28 @@ const AddAcademic = ({ filler, lecturerOption, semesterOption, batchOption }) =>
     }
   })
   const optionSemester = semesterOption?.map((item) => {
+    // console.log(item)
     return {
       value: item.id,
-      label: `Semester - ${item.semesterNumber}`,
+      label: `Department : ${item.department} , Batch : ${item.batchNumber} - Semester - ${item.semesterNumber} `,
     }
   })
   const optionBatch = batchOption?.map((item) => {
+    // console.log(item)
     return {
       value: item.id,
-      label: `Batch - ${item.batchNumber}`,
+      label: `Batch - ${item.batchNumber} - ${item.departmentName}`,
     }
   })
+  const student = allStudent?.map((item) => {
+    // console.log(item)
+    return {
+      value: item.id,
+      label: item.name,
+      courses: item.courses
+    }
+  })
+
 
 
   return (
@@ -106,7 +128,16 @@ const AddAcademic = ({ filler, lecturerOption, semesterOption, batchOption }) =>
         {
           filler == 'course' ? <CourseForm assigneeOptions={optionLecturer} option={optionSemester} OptionComponent={OptionComponent} /> : filler == "batch" ? <BatchForm departmentOption={optionDepartment} /> : <SemesterForm batchOption={optionBatch} />
         }
-
+      </Modal>
+      <Modal
+        title={`Assign ${filler.toUpperCase()} To Student`}
+        labelclassName="btn-outline-dark"
+        activeModal={assignCourseModal}
+        onClose={() => dispatch(assignCourseToggleModal(false))}
+      >
+        {
+          filler == 'course' && <AssignCourseToStudent assignCourseOptions={assignCourseOptions} student={student} />
+        }
       </Modal>
     </div>
   );

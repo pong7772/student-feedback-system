@@ -4,7 +4,7 @@ import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import Dropdown from "@/components/ui/Dropdown";
 import { Menu } from "@headlessui/react";
-import { removeUser, updateUser } from "./store";
+import { assignCourseToggleModal, removeUser, updateUser } from "./store";
 import { useRouter } from "next/navigation";
 import { removeBatch, removeCourse, removeSemester } from "./store";
 import Moment from "moment";
@@ -17,8 +17,12 @@ import {
 } from "react-table";
 import Button from "@/components/ui/Button";
 import { fetchData } from "@/components/partials/app/service";
+import { toast } from "react-toastify";
+import Textinput from "@/components/ui/Textinput";
+import Modal from "@/components/ui/Modal";
 const AcademicList = ({ projects, filler }) => {
   const dispatch = useDispatch();
+  const { assignCourseModal } = useSelector((state) => state.course)
   const removeBatches = async (item) => {
     await fetchData(
       "/batch/delete?id=" + item,
@@ -64,6 +68,10 @@ const AcademicList = ({ projects, filler }) => {
       })
     })
   }
+  const assignCourseToStudent = async (item) => {
+    dispatch(assignCourseToggleModal(true))
+  }
+
 
   const COLUMNS = (filler == "course") ? [
     {
@@ -127,7 +135,9 @@ const AcademicList = ({ projects, filler }) => {
       accessor: "id",
       Cell: (row) => {
         return (
-          <Button onClick={() => removeCoursess(row?.cell?.value)} className="bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white " >Delete</Button>
+          <span className="flex space-x-2">
+            <Button onClick={() => removeCoursess(row?.cell?.value)} className="bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white " >Delete</Button>
+          </span>
         );
       },
     },
@@ -167,13 +177,21 @@ const AcademicList = ({ projects, filler }) => {
       },
     },
     {
+      Header: "Department",
+      accessor: "departmentName",
+      Cell: (row) => {
+        return <div>{row?.cell?.value}</div>;
+      },
+    },
+    {
       Header: "Semester",
       accessor: "semesters",
       Cell: (row) => {
+
         return (
           <div>
             <div className=" flex-col object-contain p-2 rounded-sm bg-green-100  " >
-              {row?.cell?.value?.length !== 0 ? row?.cell?.value?.map((semester, index) => (
+              {row?.cell?.value !== null ? row?.cell?.value?.map((semester, index) => (
 
                 <div key={index} >
                   <div
@@ -189,7 +207,7 @@ const AcademicList = ({ projects, filler }) => {
                         </div>
                       )) :
                         <div className="text-xs text-red-600 font-medium mx-1">
-                          No Course
+                          No Semester
                         </div>
 
                     }
@@ -344,8 +362,11 @@ const AcademicList = ({ projects, filler }) => {
   return (
     <>
       <Card noborder>
-        <div className="md:flex justify-between items-center mb-4">
-          <h4 className="card-title">{filler} List</h4>
+        <div className="md:flex justify-between items-center mb-6">
+          <h4 className="card-title">{filler} List </h4>
+          <div className="flex items-center space-x-2">
+            {filler == "course" && <Button onClick={() => { assignCourseToStudent() }} className="bg-green-500 text-green-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white " >Assign Course To Student</Button>}
+          </div>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">

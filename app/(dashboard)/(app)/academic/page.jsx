@@ -33,6 +33,7 @@ const AcademicPostPage = () => {
     const [allSemesters, setAllSemesters] = useState([]);
     const [allLecturer, setAllLecturer] = useState([])
     const [allDepartment, setAllDepartment] = useState([]);
+    const [allStudent, setAllStudent] = useState([]);
     const { courses } = useSelector((state) => state.course);
     const { batches } = useSelector((state) => state.batch);
     const { semesters } = useSelector((state) => state.semester)
@@ -49,6 +50,7 @@ const AcademicPostPage = () => {
         fetchAllCourse();
         fetchAllSemester();
         fetchAllLecturer();
+        fetchAllStudent();
     }, [filler, courses, batches, semesters, deps]);
     const fetchAllBatch = async () => {
         try {
@@ -187,6 +189,29 @@ const AcademicPostPage = () => {
             });
         }
     };
+    const fetchAllStudent = async () => {
+        try {
+            await fetchData("/student/get-all-student?page=0&size=1000", {}, "GET").then((res) => {
+                if (res) {
+                    setAllStudent(res?.content);
+                    setIsLoaded(false);
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            toast.error(error, {
+                position: "top-right",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+    };
+
 
     return (
         <div>
@@ -347,7 +372,7 @@ const AcademicPostPage = () => {
                 )
             }
 
-            <AddAcademic filler={filler} lecturerOption={allLecturer} semesterOption={allSemesters} batchOption={allBatches} />
+            <AddAcademic filler={filler} lecturerOption={allLecturer} semesterOption={allSemesters} batchOption={allBatches} assignCourseOption={allCourses} allStudent={allStudent} />
             {/* <EditAcademic filler={filler} /> */}
             <AddDepartment />
             <EditDepartment />
