@@ -1,7 +1,7 @@
 "use client";
 import { fetchData } from "@/components/partials/app/service";
 import useWidth from "@/hooks/useWidth";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -16,6 +16,7 @@ const CreateFeedbackForm = () => {
   const [selectData, setSelectData] = useState();
   const dispatch = useDispatch();
   const pathname = usePathname();
+  const router = useRouter();
   const id = pathname?.split("/").pop();
   const colors = [
     {
