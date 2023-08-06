@@ -123,6 +123,7 @@ const AddAcademic = ({ filler, lecturerOption, semesterOption, batchOption, assi
         title={`Create a new ${filler.toUpperCase()}`}
         labelclassName="btn-outline-dark"
         activeModal={openProjectModal}
+        scrollContent
         onClose={() => dispatch(filler == 'course' ? dispatch(courseToggleAddModal(false)) : filler == 'batch' ? dispatch(batchToggleAddModal(false)) : dispatch(semesterToggleAddModal(false)))}
       >
         {
@@ -133,6 +134,7 @@ const AddAcademic = ({ filler, lecturerOption, semesterOption, batchOption, assi
         title={`Assign ${filler.toUpperCase()} To Student`}
         labelclassName="btn-outline-dark"
         activeModal={assignCourseModal}
+        scrollContent
         onClose={() => dispatch(assignCourseToggleModal(false))}
       >
         {
