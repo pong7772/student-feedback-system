@@ -82,8 +82,7 @@ const AcademicList = ({ projects, filler }) => {
           <div className="flex space-x-3 items-center text-left rtl:space-x-reverse">
             <div className="flex-none">
               <div className="h-10 w-10 rounded-full text-sm bg-[#E0EAFF] dark:bg-slate-700 flex flex-col items-center justify-center font-medium -tracking-[1px]">
-                {row?.cell?.value !== null && row?.cell?.value?.charAt(0) +
-                  row?.cell?.value?.charAt(row?.cell?.value?.length - 1)}
+                {row?.cell?.value && row?.cell?.value?.charAt(0)}
               </div>
             </div>
             <div className="flex-1 font-medium text-sm leading-4 whitespace-nowrap">
