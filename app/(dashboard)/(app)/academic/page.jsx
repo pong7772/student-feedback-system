@@ -59,7 +59,7 @@ const AcademicPostPage = () => {
                 "GET"
             ).then(batch => {
                 if (batch) {
-                    setAllBatches(batch.content)
+                    setAllBatches(batch?.content)
                     setIsLoaded(false)
                 }
             }
@@ -88,7 +88,7 @@ const AcademicPostPage = () => {
                 "/course/get-all?page=0&size=1000", {}, "GET"
             ).then(course => {
                 if (course) {
-                    setAllCourses(course.content)
+                    setAllCourses(course?.content)
                     setIsLoaded(false)
                 }
             }
@@ -116,7 +116,7 @@ const AcademicPostPage = () => {
                 "/semester/get-all?page=0&size=1000", {}, "GET"
             ).then(semester => {
                 if (semester) {
-                    setAllSemesters(semester.content)
+                    setAllSemesters(semester?.content)
                     setIsLoaded(false)
                 }
             }
@@ -144,7 +144,7 @@ const AcademicPostPage = () => {
                 "/lecturer/get-all-lecturer?page=0&size=100", {}, "GET"
             ).then(lecturer => {
                 if (lecturer) {
-                    setAllLecturer(lecturer.contents)
+                    setAllLecturer(lecturer?.contents)
                     setIsLoaded(false)
                 }
             }
