@@ -174,10 +174,10 @@ const Dashboard = () => {
                 </div>
                 {/* student and teacher  */}
                 <div className="text-sm font-medium text-slate-700 dark:text-white">
-                  Have Student {allUser?.filter((user) => user?.role === "STUDENT")?.length}
+                  Have Student : {allUser?.filter((user) => user?.role === "STUDENT")?.length}
                 </div>
                 <div className="text-sm font-medium text-slate-700 dark:text-white">
-                  Have Teacher {allUser?.filter((user) => user?.role === "TEACHER")?.length}
+                  Have Teacher : {allUser?.filter((user) => user?.role === "LECTURER")?.length}
                 </div>
               </div>
 
@@ -185,7 +185,7 @@ const Dashboard = () => {
                 <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
                   Total Feedback Form
                 </h4>
-                <div className="text-sm font-medium text-slate-900 dark:text-white">
+                <div className="text-lg font-medium text-green-700 dark:text-white">
                   {feedbacks?.length}
                 </div>
               </div>
@@ -194,7 +194,7 @@ const Dashboard = () => {
                 <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
                   Total Department
                 </h4>
-                <div className="text-sm font-medium text-slate-900 dark:text-white">
+                <div className="text-lg font-medium text-green-700 dark:text-white">
                   {allDepartment?.length}
                 </div>
               </div>
