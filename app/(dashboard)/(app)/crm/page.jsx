@@ -30,7 +30,7 @@ const Dashboard = () => {
   const [page, setPage] = useState(0)
   const [allUser, setAllUser] = useState([])
   const [count, setCount] = useState(0)
-  const [semester, setAllSemester] = useState({})
+  const [semester, setAllSemester] = useState([])
   const [feedbacks, setFeedbacks] = useState([]);
   const [feedbackRes, setFeedbackRes] = useState([]);
   const [allDepartment, setAllDepartment] = useState([])
@@ -50,7 +50,7 @@ const Dashboard = () => {
     try {
       await fetchData("/feedback-form/get-response", {}, "GET").then((res) => {
         if (res) {
-          setFeedbackRes(res);
+          setFeedbackRes(res?.content);
         }
       });
 
@@ -163,7 +163,7 @@ const Dashboard = () => {
 
         <div className="lg:col-span-4 col-span-12">
           <Card title="Overview" headerslot={<SelectMonth />}>
-            <RadarChart total={semester?.count} />
+            <RadarChart total={semester?.length} />
             <div className="bg-slate-50 dark:bg-slate-900 rounded p-4 mt-8 flex justify-between flex-wrap">
               <div className="space-y-1">
                 <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
