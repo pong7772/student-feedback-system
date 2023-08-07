@@ -30,7 +30,7 @@ const RadarChart = ({ total }) => {
             label: "Total Semester",
             color: isDark ? "#E2E8F0" : "#475569",
             formatter: function () {
-              return { total };
+              return { total: 20 };
             },
           },
         },

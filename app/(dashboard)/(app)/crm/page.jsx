@@ -50,7 +50,7 @@ const Dashboard = () => {
     try {
       await fetchData("/feedback-form/get-response", {}, "GET").then((res) => {
         if (res) {
-          setFeedbackRes(res?.content);
+          setFeedbackRes(res);
         }
       });
 
