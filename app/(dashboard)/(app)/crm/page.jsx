@@ -30,6 +30,7 @@ const Dashboard = () => {
   const [page, setPage] = useState(0)
   const [allUser, setAllUser] = useState([])
   const [count, setCount] = useState(0)
+  const [semester, setAllSemester] = useState({})
   const [feedbacks, setFeedbacks] = useState([]);
   const [feedbackRes, setFeedbackRes] = useState([]);
   const [allDepartment, setAllDepartment] = useState([])
@@ -38,10 +39,9 @@ const Dashboard = () => {
   useEffect(() => {
     // this is the loading animation need to implemnent with backend  
     fetchAllUsers()
-    fetchDepartments()
+    fetchDepartmentsAndSemester()
     fetchAllResponse();
     fetchFeedbackForm();
-
   }, [users]);
 
   // fetch all user from backend 
@@ -53,6 +53,7 @@ const Dashboard = () => {
           setFeedbackRes(res);
         }
       });
+
     } catch (error) {
       console.log(error);
       toast.error(error, {
@@ -85,15 +86,19 @@ const Dashboard = () => {
       console.log(err)
     });
   }
-  const fetchDepartments = async () => {
+  const fetchDepartmentsAndSemester = async () => {
     try {
       await fetchData("/department/get-all?page=0&size=1000", {}, "GET").then((res) => {
         if (res) {
-          console.log(res)
           // dispatch(setDep(res?.content))
           setAllDepartment(res?.content);
         }
       });
+      await fetchData("/api/v1/semester/get-all?page=0&size=10", {}, "GET").then((res) => {
+        if (res) {
+          setAllSemester(res)
+        }
+      })
     } catch (error) {
       console.log(error);
       toast.error(error, {
@@ -158,7 +163,7 @@ const Dashboard = () => {
 
         <div className="lg:col-span-4 col-span-12">
           <Card title="Overview" headerslot={<SelectMonth />}>
-            <RadarChart />
+            <RadarChart total={semester?.count} />
             <div className="bg-slate-50 dark:bg-slate-900 rounded p-4 mt-8 flex justify-between flex-wrap">
               <div className="space-y-1">
                 <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
@@ -174,7 +179,7 @@ const Dashboard = () => {
                   Total Feedback Form
                 </h4>
                 <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  {feedbacks?.length + 1}
+                  {feedbacks?.length}
                 </div>
               </div>
 
@@ -183,7 +188,7 @@ const Dashboard = () => {
                   Total Department
                 </h4>
                 <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  {allDepartment?.length + 1}
+                  {allDepartment?.length}
                 </div>
               </div>
             </div>

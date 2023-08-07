@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import useDarkMode from "@/hooks/useDarkMode";
 
-const RadarChart = () => {
+const RadarChart = ({ total }) => {
   const [isDark] = useDarkMode();
   const series = [67];
   const options = {
@@ -27,10 +27,10 @@ const RadarChart = () => {
           },
           total: {
             show: true,
-            label: "Total",
+            label: "Total Semester",
             color: isDark ? "#E2E8F0" : "#475569",
             formatter: function () {
-              return 24;
+              return { total };
             },
           },
         },

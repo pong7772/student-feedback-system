@@ -211,20 +211,20 @@ const GroupChart1 = ({ userCount, allDepartment, feedbackRes }) => {
   const statistics = [
     {
       name: shapeLine1,
-      title: "Totel User",
+      title: "Total User",
       count: userCount,
       bg: "bg-[#E5F9FF] dark:bg-slate-900	",
     },
     {
       name: shapeLine2,
       title: "Total Feedback Responses",
-      count: feedbackRes?.length + 1,
+      count: feedbackRes?.length,
       bg: "bg-[#FFEDE5] dark:bg-slate-900	",
     },
     {
       name: shapeLine3,
       title: "Total Department",
-      count: allDepartment?.length + 1,
+      count: allDepartment?.length,
       bg: "bg-[#EAE5FF] dark:bg-slate-900	",
     },
   ];
