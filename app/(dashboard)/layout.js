@@ -20,6 +20,7 @@ import useRtl from "@/hooks/useRtl";
 import useSidebar from "@/hooks/useSidebar";
 import useSkin from "@/hooks/useSkin";
 import useWidth from "@/hooks/useWidth";
+import { Analytics } from "@vercel/analytics/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 import { redirect } from "next/navigation";
@@ -164,6 +165,7 @@ export default function RootLayout({ children }) {
               <Suspense fallback={<Loading />}>
                 <Breadcrumbs />
                 {children}
+                <Analytics />;
               </Suspense>
             </motion.div>
           </div>
