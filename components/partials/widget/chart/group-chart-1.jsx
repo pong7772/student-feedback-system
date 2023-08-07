@@ -207,7 +207,7 @@ const shapeLine3 = {
   },
 };
 
-const GroupChart1 = ({ userCount, allDepartment }) => {
+const GroupChart1 = ({ userCount, allDepartment, feedbackRes }) => {
   const statistics = [
     {
       name: shapeLine1,
@@ -218,7 +218,7 @@ const GroupChart1 = ({ userCount, allDepartment }) => {
     {
       name: shapeLine2,
       title: "Total Feedback Responses",
-      count: "10",
+      count: feedbackRes?.length + 1,
       bg: "bg-[#FFEDE5] dark:bg-slate-900	",
     },
     {

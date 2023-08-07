@@ -28,10 +28,10 @@ const Feedback = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     setIsLoaded(true);
-    fetchDepartments();
+    fetchFeedbackForm();
     fetchAllCourse();
   }, [feedback]);
-  const fetchDepartments = async () => {
+  const fetchFeedbackForm = async () => {
     await fetchData("/feedback-form/get-all?page=0&size=100", {}, "GET").then(
       (res) => {
         if (res) {

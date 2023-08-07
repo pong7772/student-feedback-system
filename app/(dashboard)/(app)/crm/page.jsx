@@ -30,6 +30,8 @@ const Dashboard = () => {
   const [page, setPage] = useState(0)
   const [allUser, setAllUser] = useState([])
   const [count, setCount] = useState(0)
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [feedbackRes, setFeedbackRes] = useState([]);
   const [allDepartment, setAllDepartment] = useState([])
 
   // console.log(users)
@@ -37,9 +39,34 @@ const Dashboard = () => {
     // this is the loading animation need to implemnent with backend  
     fetchAllUsers()
     fetchDepartments()
+    fetchAllResponse();
+    fetchFeedbackForm();
+
   }, [users]);
 
   // fetch all user from backend 
+
+  const fetchAllResponse = async () => {
+    try {
+      await fetchData("/feedback-form/get-response", {}, "GET").then((res) => {
+        if (res) {
+          setFeedbackRes(res);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error(error, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }
 
   const fetchAllUsers = async () => {
     await fetchData(
@@ -81,6 +108,29 @@ const Dashboard = () => {
       });
     }
   };
+  const fetchFeedbackForm = async () => {
+    await fetchData("/feedback-form/get-all?page=0&size=100", {}, "GET").then(
+      (res) => {
+        if (res) {
+          setFeedbacks(res?.content);
+          // dispatch(setForm(res?.content));
+        }
+      }
+    ).catch((err) => {
+      console.log(err)
+      toast.error("fail to get data", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    });
+
+  };
   return (
     <div>
 
@@ -91,7 +141,7 @@ const Dashboard = () => {
         <div className="2xl:col-span-9 lg:col-span-8 col-span-12">
           <Card bodyClass="p-4">
             <div className="grid md:grid-cols-3 col-span-1 gap-4">
-              <GroupChart1 userCount={count} allDepartment={allDepartment} />
+              <GroupChart1 userCount={count} allDepartment={allDepartment} feedbackRes={feedbackRes} />
             </div>
           </Card>
         </div>
@@ -121,10 +171,10 @@ const Dashboard = () => {
 
               <div className="space-y-1">
                 <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
-                  Total Feedback
+                  Total Feedback Form
                 </h4>
                 <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  7
+                  {feedbacks?.length + 1}
                 </div>
               </div>
 
