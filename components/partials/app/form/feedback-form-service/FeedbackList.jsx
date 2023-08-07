@@ -199,7 +199,7 @@ const FeedbackList = ({ feedback }) => {
 
 
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => feedback, [feedback]);
+  const data = useMemo(() => feedback && feedback, [feedback && feedback]);
 
 
   const tableInstance = useTable(

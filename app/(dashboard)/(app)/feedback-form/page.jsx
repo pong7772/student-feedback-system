@@ -124,7 +124,7 @@ const Feedback = () => {
 
       {isLoaded && <TableLoading count={feedback?.length} />}
 
-      {!isLoaded && (
+      {!isLoaded && feedbacks && (
         <div>
           <FeedbackList feedback={feedbacks} />
         </div>

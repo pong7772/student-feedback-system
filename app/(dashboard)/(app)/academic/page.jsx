@@ -171,8 +171,8 @@ const AcademicPostPage = () => {
             await fetchData("/department/get-all?page=0&size=1000", {}, "GET").then((res) => {
                 if (res) {
                     setAllDepartment(res?.content);
-                    dispatch(setDep(res?.content))
                     setIsLoaded(false);
+                    dispatch(setDep(res?.content))
                 }
             });
         } catch (error) {
@@ -211,8 +211,6 @@ const AcademicPostPage = () => {
             });
         }
     };
-
-
     return (
         <div>
             <ToastContainer />
@@ -353,7 +351,7 @@ const AcademicPostPage = () => {
             {
                 filler === "semester" && !isLoaded && (
                     <div>
-                        <AcademicList projects={allSemesters} filler={filler} />
+                        <AcademicList projects={allSemesters && allSemesters} filler={filler} />
                     </div>
                 )
             }

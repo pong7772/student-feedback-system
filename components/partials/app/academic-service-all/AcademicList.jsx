@@ -82,8 +82,8 @@ const AcademicList = ({ projects, filler }) => {
           <div className="flex space-x-3 items-center text-left rtl:space-x-reverse">
             <div className="flex-none">
               <div className="h-10 w-10 rounded-full text-sm bg-[#E0EAFF] dark:bg-slate-700 flex flex-col items-center justify-center font-medium -tracking-[1px]">
-                {row?.cell?.value?.charAt(0) +
-                  row?.cell?.value?.charAt(row?.cell?.value.length - 1)}
+                {row?.cell?.value !== null && row?.cell?.value?.charAt(0) +
+                  row?.cell?.value?.charAt(row?.cell?.value?.length - 1)}
               </div>
             </div>
             <div className="flex-1 font-medium text-sm leading-4 whitespace-nowrap">
@@ -113,11 +113,11 @@ const AcademicList = ({ projects, filler }) => {
         return (
           <div>
             <div className=" flex-col object-contain p-2 rounded-sm bg-green-100  " >
-              {row?.cell?.value?.length !== 0 ? row?.cell?.value?.map((form, index) => (
+              {row?.cell?.value !== null ? row?.cell?.value?.map((form, index) => (
 
                 <div key={index} className=" flex items-center justify-start text-gray-600 mx-1">
                   <div className="text-xs text-white-600 font-medium mx-1">
-                    {index + 1} / {form?.title} have {form?.questions.length} Question
+                    {index + 1} / {form?.title} have {form?.questions?.length} Question
                   </div>
                 </div>
 
@@ -281,7 +281,7 @@ const AcademicList = ({ projects, filler }) => {
       return (
         <div>
           <div className=" flex-col object-contain p-2 rounded-sm bg-green-100  " >
-            {row?.cell?.value?.length !== 0 ? row?.cell?.value?.map((course, index) => (
+            {row?.cell?.value !== null ? row?.cell?.value?.map((course, index) => (
 
               <div key={index} >
                 <div
@@ -326,7 +326,7 @@ const AcademicList = ({ projects, filler }) => {
   ];
 
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => projects, [projects]);
+  const data = useMemo(() => projects && projects, [projects && projects]);
 
   const tableInstance = useTable(
     {

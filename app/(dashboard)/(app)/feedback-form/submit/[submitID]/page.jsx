@@ -152,7 +152,7 @@ const CreateFeedbackForm = () => {
       <div>
         <form onSubmit={handleSubmit} >
           <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 items-center w-full mb-4">
-            {formData.map((data, index) => (
+            {formData?.map((data, index) => (
 
               <Card title={data.questionText}
                 // className={`${item.bg} dark:${item.bg} `}

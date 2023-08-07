@@ -69,12 +69,12 @@ const AddAcademic = ({ filler, lecturerOption, semesterOption, batchOption, assi
   const dispatch = useDispatch();
   const { storeDepartment } = useSelector((state) => state.department)
   const { assignCourseModal } = useSelector((state) => state.course)
-  const optionDepartment = storeDepartment.map((item) => {
+  const optionDepartment = storeDepartment?.map((item) => {
     // console.log(item)
     return {
-      value: item.id,
-      label: item.name + "[" + item.batches.map((item) => {
-        return ` batch : ${item.batchNumber}`
+      value: item?.id,
+      label: item?.name + "[" + item?.batches?.map((item) => {
+        return ` batch : ${item?.batchNumber}`
       }) + "]"
     };
   });
