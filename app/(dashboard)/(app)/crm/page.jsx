@@ -30,7 +30,7 @@ const Dashboard = () => {
   const [page, setPage] = useState(0)
   const [allUser, setAllUser] = useState([])
   const [count, setCount] = useState(0)
-  const [semester, setAllSemester] = useState([])
+  const [batch, setBatch] = useState([])
   const [feedbacks, setFeedbacks] = useState([]);
   const [feedbackRes, setFeedbackRes] = useState([]);
   const [allDepartment, setAllDepartment] = useState([])
@@ -39,7 +39,7 @@ const Dashboard = () => {
   useEffect(() => {
     // this is the loading animation need to implemnent with backend  
     fetchAllUsers()
-    fetchDepartmentsAndSemester()
+    fetchDepartmentsAndBatch()
     fetchAllResponse();
     fetchFeedbackForm();
   }, [users]);
@@ -86,7 +86,7 @@ const Dashboard = () => {
       console.log(err)
     });
   }
-  const fetchDepartmentsAndSemester = async () => {
+  const fetchDepartmentsAndBatch = async () => {
     try {
       await fetchData("/department/get-all?page=0&size=1000", {}, "GET").then((res) => {
         if (res) {
@@ -94,9 +94,9 @@ const Dashboard = () => {
           setAllDepartment(res?.content);
         }
       });
-      await fetchData("/api/v1/semester/get-all?page=0&size=10", {}, "GET").then((res) => {
+      await fetchData("/batch/get-all?page=0&size=1000", {}, "GET").then((res) => {
         if (res) {
-          setAllSemester(res)
+          setBatch(res?.content)
         }
       })
     } catch (error) {
@@ -162,15 +162,22 @@ const Dashboard = () => {
 
 
         <div className="lg:col-span-4 col-span-12">
-          <Card title="Overview" headerslot={<SelectMonth />}>
-            <RadarChart total={semester?.length} />
+          <Card title="Overview Of Academic" >
+            <RadarChart total={batch?.length} />
             <div className="bg-slate-50 dark:bg-slate-900 rounded p-4 mt-8 flex justify-between flex-wrap">
               <div className="space-y-1">
                 <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
                   Total User
                 </h4>
-                <div className="text-sm font-medium text-slate-900 dark:text-white">
+                <div className="text-lg font-medium text-green-700 dark:text-white">
                   {count}
+                </div>
+                {/* student and teacher  */}
+                <div className="text-sm font-medium text-slate-700 dark:text-white">
+                  Have Student {allUser?.filter((user) => user?.role === "STUDENT")?.length}
+                </div>
+                <div className="text-sm font-medium text-slate-700 dark:text-white">
+                  Have Teacher {allUser?.filter((user) => user?.role === "TEACHER")?.length}
                 </div>
               </div>
 
@@ -195,7 +202,7 @@ const Dashboard = () => {
           </Card>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
