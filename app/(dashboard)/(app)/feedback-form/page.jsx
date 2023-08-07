@@ -36,7 +36,6 @@ const Feedback = () => {
       (res) => {
         if (res) {
           setFeedbacks(res?.content);
-          // dispatch(setForm(res?.content));
           setIsLoaded(false);
         }
       }
