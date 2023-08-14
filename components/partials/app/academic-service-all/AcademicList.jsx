@@ -426,7 +426,7 @@ const AcademicList = ({ projects, filler }) => {
                           );
                         })}
                       </tr>
-                    );
+                    )
                   })}
                 </tbody>
               </table>
