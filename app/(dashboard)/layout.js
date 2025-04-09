@@ -44,7 +44,10 @@ export default function RootLayout({ children }) {
   const { isAuth, users } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(true);
 
-
+  useEffect(() => {
+    if (!isAuth) {
+      redirect("/");
+    }
     setLoading(false);
     if (pathname === "/academic" || pathname === "/user") {
       if (users.role !== "ADMIN") {
